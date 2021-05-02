@@ -3,7 +3,6 @@ Supervised Learning
 
 PYTHON VERSION -> 3.8.9
 pip install gym
-pip install stable_baselines
 pip install tensorflow
 
 Step-1:
