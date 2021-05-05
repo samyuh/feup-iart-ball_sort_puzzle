@@ -1,7 +1,7 @@
 import gym
 import numpy as np
 
-NUM_BOTTLES = 2
+NUM_BOTTLES = 3
 BOTTLE_SIZE = 3
 """
 bottle_list = [["yellow"], [ "yellow", "yellow"]]
@@ -35,7 +35,7 @@ class BasicEnv(gym.Env):
         self.action_space = gym.spaces.Tuple((gym.spaces.Discrete(NUM_BOTTLES), gym.spaces.Discrete(NUM_BOTTLES)))
 
         # 2 boxes, de tamnho 3 -> para que raio é preciso isto
-        self.observation_space = gym.spaces.Discrete(4) #gym.spaces.Box(low=0, high=1, shape=(NUM_BOTTLES, BOTTLE_SIZE), dtype=np.int32) 
+        self.observation_space = gym.spaces.Discrete(NUM_BOTTLES + 1) #gym.spaces.Box(low=0, high=1, shape=(NUM_BOTTLES, BOTTLE_SIZE), dtype=np.int32) 
         self.reset()
  
     def step(self, action):
@@ -43,35 +43,41 @@ class BasicEnv(gym.Env):
         self.ite += 1
         reward = self.applyMovement(action) / self.ite
         
-        done = self.isGoal()    
-        return 1, reward, done, self.board
+        done = self.isGoal() 
+        state = self.numberFilled()
+        return state, reward, done, self.board
     
     def applyMovement(self, action):
         # Invalid Move
-        print(action)
-        
         if (action[0] == action[1]):
-            return -999
-        
+            return -2
+
         # Get pieces to toggle
         first, second = self.getFirstNotEmpty(self.board[action[0]]), self.getFirstEmpty(self.board[action[1]])
 
         # Invalid Move
         if first == -1 or second == -1:
-            return -999
+            return -2
 
         # Get Color to Swap
         color = self.board[action[0]][first]
         # Invalid Move
         if not self.checkColor(color, self.board[action[1]], second-1):
-            return -999
+            return -2
 
         # Do the action
         self.board[action[0]][first] = 0
         self.board[action[1]][second] = color
 
-        return 1
+        return 5
     
+    def numberFilled(self):
+        value = 0
+        for i in self.board:
+            if all(element == i[0] for element in i):
+                value += 1
+        return value
+
     def checkColor(self, color, bottle, index):
         if index == -1:
             return True
@@ -83,7 +89,7 @@ class BasicEnv(gym.Env):
         for idx, i in enumerate(targetBoard):
             if i == 0:
                 return idx-1
-        return -1   
+        return BOTTLE_SIZE - 1
 
     def getFirstEmpty(self, targetBoard):
         for idx, i in enumerate(targetBoard):
@@ -101,6 +107,6 @@ class BasicEnv(gym.Env):
 
     def reset(self):
         self.ite = 0
-        self.board = [[1, 1, 0], [1, 0, 0]]
+        self.board = [[1, 1, 0], [1, 2, 0], [2, 2, 0]]
         self.done = False       
         return tuple(self.board)

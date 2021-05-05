@@ -7,18 +7,28 @@ env = gym.make("gym_basic:basic-v0")
 dicta = {
     0: (0, 0),
     1: (1, 0),
-    2: (0, 1),
-    3: (1, 1),
+    2: (2, 0),
+    3: (0, 1),
+    4: (0, 2),
+    5: (1, 2),
+    6: (2, 1),
+    7: (1, 1),
+    8: (2, 2),
 }
 
 dicti = {
     "(0, 0)" : 0,
     "(1, 0)" : 1,
-    "(0, 1)" : 2,
-    "(1, 1)" : 3,
+    "(2, 0)" : 2,
+    "(0, 1)" : 3,
+    "(0, 2)" : 4,
+    "(1, 2)" : 5,
+    "(2, 1)" : 6,
+    "(1, 1)" : 7,
+    "(2, 2)" : 8,
 }
 
-action_space_size = 4
+action_space_size = 9
 state_space_size = env.observation_space.n
 
 q_table = np.zeros((state_space_size, action_space_size))
@@ -47,9 +57,10 @@ for episode in range(num_episodes):
     for step in range(max_steps_per_episode):
         
         # Exploration -exploitation trade-off
+
         exploration_rate_threshold = random.uniform(0,1)
         if exploration_rate_threshold > exploration_rate: 
-            action = np.argmax(q_table[state,:]) % 4
+            action = np.argmax(q_table[state,:]) % 9 
             action = dicta[action]
         else:
             action = env.action_space.sample()
@@ -67,6 +78,7 @@ for episode in range(num_episodes):
         rewards_current_episode += reward
         
         if done == True: 
+            print("Found Solution")
             break
             
     # Exploration rate decay
