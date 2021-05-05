@@ -4,10 +4,24 @@ import numpy as np
 
 env = gym.make("gym_basic:basic-v0")
 
-action_space_size = env.action_space.n
+dicta = {
+    0: (0, 0),
+    1: (1, 0),
+    2: (0, 1),
+    3: (1, 1),
+}
+
+dicti = {
+    "(0, 0)" : 0,
+    "(1, 0)" : 1,
+    "(0, 1)" : 2,
+    "(1, 1)" : 3,
+}
+
+action_space_size = 4
 state_space_size = env.observation_space.n
+
 q_table = np.zeros((state_space_size, action_space_size))
-print(q_table)
 
 num_episodes = 1000
 max_steps_per_episode = 10 # but it won't go higher than 1
@@ -35,16 +49,20 @@ for episode in range(num_episodes):
         # Exploration -exploitation trade-off
         exploration_rate_threshold = random.uniform(0,1)
         if exploration_rate_threshold > exploration_rate: 
-            action = np.argmax(q_table[state,:])
+            action = np.argmax(q_table[state,:]) % 4
+            action = dicta[action]
         else:
             action = env.action_space.sample()
-            
+        
+       
         new_state, reward, done, info = env.step(action)
         
+        action = dicti[str(action)]
         # Update Q-table for Q(s,a)
         q_table[state, action] = (1 - learning_rate) * q_table[state, action] + \
             learning_rate * (reward + discount_rate * np.max(q_table[new_state,:]))
-            
+        
+        print(q_table)
         state = new_state
         rewards_current_episode += reward
         
