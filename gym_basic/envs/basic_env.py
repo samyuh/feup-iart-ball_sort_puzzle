@@ -101,7 +101,7 @@ class BasicEnv(gym.Env):
         print("Bottles - Move {}".format(self.iteration))
         for idx in range(BOTTLE_SIZE):
             for bottle_num in range(NUM_BOTTLES):
-                print("|" + str(self.game.board[bottle_num][idx]) + "|", end="")
+                print("|" + str(self.game.board[bottle_num][BOTTLE_SIZE - idx - 1]) + "|", end="")
             print("\n", end="")
 
     def reset(self):
