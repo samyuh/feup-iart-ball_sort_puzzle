@@ -36,14 +36,15 @@ def run():
 
     # Q-Learning algorithm
     for episode in range(num_episodes):
-        state = env.reset()
         print("********* EPISODE {} *********".format(episode))
+        state = env.reset()
         
         done = False
         rewards_current_episode = 0
         
         for step in range(max_steps_per_episode):
             env.render()
+
             # Exploration -exploitation trade-off
             exploration_rate_threshold = random.uniform(0,1)
             if exploration_rate_threshold > exploration_rate: 
@@ -53,20 +54,18 @@ def run():
                 action = env.action_space.sample()
             
             new_state, reward, done, info = env.step(action)
-            
             action = dicti[action]
+
             # Update Q-table for Q(s,a)
             q_table[state, action] = (1 - learning_rate) * q_table[state, action] + \
                 learning_rate * (reward + discount_rate * np.max(q_table[new_state,:]))
             
-            #print(q_table)
-            print("New State")
-            print(new_state)
             state = new_state
             rewards_current_episode += reward
             
             if done == True: 
                 print("Found Solution")
+                env.render()
                 break
                 
         # Exploration rate decay
@@ -86,6 +85,5 @@ def run():
         
     # Print updated Q-table
     print(dicta)
-    print(dicti)
     print("\n\n********** Q-table **********\n")
     print(q_table)

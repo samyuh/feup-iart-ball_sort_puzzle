@@ -22,26 +22,26 @@ class BallSortPuzzle():
     def applyMovement(self, action):
         # Invalid Move
         if (action[0] == action[1]):
-            return -2
+            return -999
 
         # Get pieces to toggle
-        first, second = self.getFirstNotEmpty(self.board[action[0]]), self.getFirstEmpty(self.board[action[1]])
+        first, second = self.pickPiece(self.board[action[0]]), self.getFirstEmpty(self.board[action[1]])
 
         # Invalid Move
         if first == -1 or second == -1:
-            return -2
+            return -999
 
         # Get Color to Swap
         color = self.board[action[0]][first]
         # Invalid Move
         if not self.checkColor(color, self.board[action[1]], second-1):
-            return -2
+            return -999
 
         # Do the action
         self.board[action[0]][first] = 0
         self.board[action[1]][second] = color
 
-        return 5
+        return 1
 
     def checkColor(self, color, bottle, index):
         if index == -1:
@@ -50,10 +50,10 @@ class BallSortPuzzle():
             return True
         return False
     
-    def getFirstNotEmpty(self, targetBoard):
+    def pickPiece(self, targetBoard):
         for idx, i in enumerate(targetBoard):
             if i == 0:
-                return idx-1
+                return idx - 1
         return BOTTLE_SIZE - 1
 
     def getFirstEmpty(self, targetBoard):
@@ -88,13 +88,13 @@ class BasicEnv(gym.Env):
         #assert self.action_space.contains(action)
 
         self.iteration += 1
-
-        reward = self.game.applyMovement(action) / self.iteration
+        reward = self.game.applyMovement(action) / (self.iteration * 10)
         done = self.game.isGoal()
-
         state = self.game.getState()
+
+        if done:
+            reward += 10
         
-        print(state, reward, done, self.game.board)
         return state, reward, done, self.game.board
     
     def render(self, mode="human", close=False):
