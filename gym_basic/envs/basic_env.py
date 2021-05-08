@@ -105,6 +105,17 @@ class BasicEnv(gym.Env):
                 return False
         return True
 
+    def render(self, mode="human", close=False):
+        for idx, i in enumerate(self.board):
+            print("Bottle" + str(idx))
+            start = 3 - len(i)
+            for value in range(3):
+                if value >= start:
+                    print("|" + str(i[value-start]) + "|")
+                else:
+                    print("|    |")
+        print("\n")
+
     def reset(self):
         self.ite = 0
         self.board = [[1, 1, 0], [1, 2, 0], [2, 2, 0]]
