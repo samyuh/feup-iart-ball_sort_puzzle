@@ -1,52 +1,24 @@
 import gym
 import numpy as np
 
-NUM_BOTTLES = 3
+NUM_BOTTLES = 2
 BOTTLE_SIZE = 3
-"""
-bottle_list = [["yellow"], [ "yellow", "yellow"]]
-move_list = []
 
-def ansiEncodeGame():
-    for idx, i in enumerate(bottle_list):
-        print("Bottle" + str(idx))
-        start = MAX_BALLS - len(i)
-        for value in range(MAX_BALLS):
-            if value >= start:
-                print("|" + i[value-start] + "|")
-            else:
-                print("|    |")
-        print("\n")
+STATES = {
+    tuple([tuple([1, 1, 0]), tuple([1, 0, 0])]) : 0,
+    tuple([tuple([1, 1, 1]), tuple([0, 0, 0])]) : 1,
+    tuple([tuple([1, 0, 0]), tuple([1, 1, 0])]) : 2,
+    tuple([tuple([0, 0, 0]), tuple([1, 1, 1])]) : 3,
+}
 
-def moves():
-    for idxA, a in enumerate(bottle_list): # Pick from this bottle
-        for idxB, b in enumerate(bottle_list): # To this bottle
-            if not a:
-                continue
-            elif not b:
-                move_list.append([a[0], idxA, idxB])
-            elif (a[0] == b[0]) and isNotFull(b) and a != b:
-                move_list.append([a[0], idxA, idxB])
-"""
-
-class BasicEnv(gym.Env):
-    def __init__(self):
-        # Duas ações -> um para o dois ou dois para um
-        self.action_space = gym.spaces.Tuple((gym.spaces.Discrete(NUM_BOTTLES), gym.spaces.Discrete(NUM_BOTTLES)))
-
-        # 2 boxes, de tamnho 3 -> para que raio é preciso isto
-        self.observation_space = gym.spaces.Discrete(NUM_BOTTLES + 1) #gym.spaces.Box(low=0, high=1, shape=(NUM_BOTTLES, BOTTLE_SIZE), dtype=np.int32) 
-        self.reset()
- 
-    def step(self, action):
-        #assert self.action_space.contains(action)
-        self.ite += 1
-        reward = self.applyMovement(action) / self.ite
-        
-        done = self.isGoal() 
-        state = self.numberFilled()
-        return state, reward, done, self.board
+class BallSortPuzzle():
+    def __init__(self, board):
+        self.board = board
     
+    def getState(self):
+        tup = tuple(tuple(sub) for sub in self.board)
+        return STATES[tup]
+
     def applyMovement(self, action):
         # Invalid Move
         if (action[0] == action[1]):
@@ -70,13 +42,6 @@ class BasicEnv(gym.Env):
         self.board[action[1]][second] = color
 
         return 5
-    
-    def numberFilled(self):
-        value = 0
-        for i in self.board:
-            if all(element == i[0] for element in i):
-                value += 1
-        return value
 
     def checkColor(self, color, bottle, index):
         if index == -1:
@@ -105,19 +70,44 @@ class BasicEnv(gym.Env):
                 return False
         return True
 
+class BasicEnv(gym.Env):
+    def __init__(self):
+        # Action Space
+        # (X, Y) ->
+        #   Where X is the Bottle where the Ball is picked and Y the Bottle where the Ball is put
+        self.action_space = gym.spaces.Tuple((gym.spaces.Discrete(NUM_BOTTLES), gym.spaces.Discrete(NUM_BOTTLES)))
+
+        # Observation Space
+        #   Number of States
+        self.observation_space = gym.spaces.Discrete(4)
+
+        # Init Game
+        self.reset()
+ 
+    def step(self, action):
+        #assert self.action_space.contains(action)
+
+        self.iteration += 1
+
+        reward = self.game.applyMovement(action) / self.iteration
+        done = self.game.isGoal()
+
+        state = self.game.getState()
+        
+        print(state, reward, done, self.game.board)
+        return state, reward, done, self.game.board
+    
     def render(self, mode="human", close=False):
-        for idx, i in enumerate(self.board):
-            print("Bottle" + str(idx))
-            start = 3 - len(i)
-            for value in range(3):
-                if value >= start:
-                    print("|" + str(i[value-start]) + "|")
-                else:
-                    print("|    |")
-        print("\n")
+        print("Bottles - Move {}".format(self.iteration))
+        for idx in range(BOTTLE_SIZE):
+            for bottle_num in range(NUM_BOTTLES):
+                print("|" + str(self.game.board[bottle_num][idx]) + "|", end="")
+            print("\n", end="")
 
     def reset(self):
-        self.ite = 0
-        self.board = [[1, 1, 0], [1, 2, 0], [2, 2, 0]]
-        self.done = False       
-        return tuple(self.board)
+        self.game = BallSortPuzzle([[1, 1, 0], [1, 0, 0]])
+        self.state = 0
+        self.iteration = 0
+        self.done = False    
+
+        return self.state

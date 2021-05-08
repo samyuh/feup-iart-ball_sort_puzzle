@@ -1,35 +1,21 @@
 import gym
 import random
 import numpy as np
+import itertools
+
+NUM_BOTTLES = 2
+
+def keyActionsDics():
+    l = list(itertools.product(list(range(0, NUM_BOTTLES)), repeat=2))
+    # l =  list(itertools.permutations(list(range(0, nBottles)), 2))
+    return dict(zip(range(len(l)),l)), dict(zip(l, range(len(l))))
 
 def run():
     env = gym.make("gym_basic:basic-v0")
 
-    dicta = {
-        0: (0, 0),
-        1: (1, 0),
-        2: (2, 0),
-        3: (0, 1),
-        4: (0, 2),
-        5: (1, 2),
-        6: (2, 1),
-        7: (1, 1),
-        8: (2, 2),
-    }
+    dicta, dicti = keyActionsDics()
 
-    dicti = {
-        "(0, 0)" : 0,
-        "(1, 0)" : 1,
-        "(2, 0)" : 2,
-        "(0, 1)" : 3,
-        "(0, 2)" : 4,
-        "(1, 2)" : 5,
-        "(2, 1)" : 6,
-        "(1, 1)" : 7,
-        "(2, 2)" : 8,
-    }
-
-    action_space_size = 9
+    action_space_size = len(dicta)
     state_space_size = env.observation_space.n
 
     q_table = np.zeros((state_space_size, action_space_size))
@@ -58,23 +44,24 @@ def run():
         
         for step in range(max_steps_per_episode):
             env.render()
-
             # Exploration -exploitation trade-off
             exploration_rate_threshold = random.uniform(0,1)
             if exploration_rate_threshold > exploration_rate: 
-                action = np.argmax(q_table[state,:]) % 9 
+                action = np.argmax(q_table[state,:])
                 action = dicta[action]
             else:
                 action = env.action_space.sample()
             
             new_state, reward, done, info = env.step(action)
             
-            action = dicti[str(action)]
+            action = dicti[action]
             # Update Q-table for Q(s,a)
             q_table[state, action] = (1 - learning_rate) * q_table[state, action] + \
                 learning_rate * (reward + discount_rate * np.max(q_table[new_state,:]))
             
             #print(q_table)
+            print("New State")
+            print(new_state)
             state = new_state
             rewards_current_episode += reward
             
@@ -98,5 +85,7 @@ def run():
         count += 100
         
     # Print updated Q-table
+    print(dicta)
+    print(dicti)
     print("\n\n********** Q-table **********\n")
     print(q_table)
