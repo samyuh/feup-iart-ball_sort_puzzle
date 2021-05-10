@@ -2,9 +2,8 @@ import numpy as np
 import gym
 
 class Sarsa:
-    def __init__(self):
-        # Building the environment
-        self.env = gym.make("gym_basic:basic-v0")
+    def __init__(self, env):
+        self.env = env
 
         # Set the action and state spaces
         self.dicta, self.dicti = self.env.game.actions
@@ -31,7 +30,6 @@ class Sarsa:
         self.rewards_all_episodes = []
 
     def run(self):
-
         # Initializing the reward
         rewards_current_episode = 0
         
@@ -113,5 +111,3 @@ class Sarsa:
         predict = self.q_table[state, action]
         target = reward + self.gamma * self.q_table[state2, action2]
         self.q_table[state, action] = self.q_table[state, action] + self.alpha * (target - predict)
-
-Sarsa().run()
