@@ -3,7 +3,7 @@ import random
 import numpy as np
 
 class QLearning:
-    def __init__(self, env):
+    def __init__(self, env, data):
         self.env = env
 
         # Set the action and state spaces
@@ -15,17 +15,18 @@ class QLearning:
         self.q_table = np.zeros((state_space_size, action_space_size))
 
         # Set hyperparameters for Q-learning
-        self.num_episodes = 1000         # Total episodes
-        self.max_steps_per_episode = 10  # but it won't go higher than 1
+        # Defining the different parameters
+        self.num_episodes = data['num_episodes'] # Total episodes
+        self.max_steps_per_episode = data['max_steps_per_episode']
 
-        self.learning_rate = 0.1         # Learning rate (alpha)
-        self.discount_rate = 0.99        # Discounting rate (gamma)
+        self.learning_rate = data['learning_rate'] # Learning rate (learning_rate)
+        self.discount_rate = data['discount_rate'] # Discounting rate (discount_rate)
 
         # Exploration Parameters
-        self.exploration_rate = 1        # Exploration rate (epsilon)
-        self.max_exploration_rate = 1    # Exploration probability at start
-        self.min_exploration_rate = 0.01 # Minimum exploration probability 
-        self.exploration_decay_rate = 0.01  # Exponential decay rate for exploration prob (if we decrease it, will learn slower)
+        self.exploration_rate = data['exploration_rate']  # Exploration rate (epsilon)
+        self.max_exploration_rate = data['max_exploration_rate'] # Exploration probability at start
+        self.min_exploration_rate = data['min_exploration_rate'] # Minimum exploration probability
+        self.exploration_decay_rate = data['exploration_decay_rate'] # Exponential decay rate for exploration prob (if we decrease it, will learn slower)
 
         # List of rewards
         self.rewards_all_episodes = []

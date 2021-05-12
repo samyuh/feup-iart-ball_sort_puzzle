@@ -43,7 +43,7 @@ class BallSortPuzzle():
         self.board[action[0]][first] = 0
         self.board[action[1]][second] = color
 
-        return 1
+        return -1
 
     def checkColor(self, color, bottle, index):
         if index == -1:
@@ -112,15 +112,15 @@ class BasicEnv(gym.Env):
         #assert self.action_space.contains(action)
 
         self.iteration += 1
-        reward = self.game.applyMovement(action) / (self.iteration * 10)
+        reward = self.game.applyMovement(action)
         done = self.game.isGoal()
         stuck = self.game.isStuck()
         state = self.game.getState()
 
         if done:
-            reward += 10
-        if stuck:
-            reward -= 10
+            reward = 10
+        elif stuck:
+            reward = -10
         
         return state, reward, done or stuck, self.game.board
     

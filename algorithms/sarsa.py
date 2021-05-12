@@ -2,7 +2,7 @@ import numpy as np
 import gym
 
 class Sarsa:
-    def __init__(self, env):
+    def __init__(self, env, data):
         self.env = env
 
         # Set the action and state spaces
@@ -14,17 +14,17 @@ class Sarsa:
         self.q_table = np.zeros((self.state_space_size, self.action_space_size))
         
         # Defining the different parameters
-        self.total_episodes = 1000           # Total episodes
-        self.max_steps = 10
+        self.num_episodes = data['num_episodes'] # Total episodes
+        self.max_steps_per_episode = data['max_steps_per_episode']
 
-        self.alpha = 0.5                     # Learning rate (alpha)
-        self.gamma = 0.99                    # Discounting rate (gamma)
+        self.learning_rate = data['learning_rate'] # Learning rate (learning_rate)
+        self.discount_rate = data['discount_rate'] # Discounting rate (discount_rate)
 
         # Exploration Parameters
-        self.exploration_rate = 1.0          # Exploration rate (epsilon)
-        self.max_exploration_rate = 1.0      # Exploration probability at start
-        self.min_exploration_rate = 0.01     # Minimum exploration probability
-        self.exploration_decay_rate = 0.01   # Exponential decay rate for exploration prob (if we decrease it, will learn slower)
+        self.exploration_rate = data['exploration_rate']  # Exploration rate (epsilon)
+        self.max_exploration_rate = data['max_exploration_rate'] # Exploration probability at start
+        self.min_exploration_rate = data['min_exploration_rate'] # Minimum exploration probability
+        self.exploration_decay_rate = data['exploration_decay_rate'] # Exponential decay rate for exploration prob (if we decrease it, will learn slower)
 
         # List of rewards
         self.rewards_all_episodes = []
@@ -34,7 +34,7 @@ class Sarsa:
         rewards_current_episode = 0
         
         # Starting the SARSA learning
-        for episode in range(self.total_episodes):
+        for episode in range(self.num_episodes):
             print("********* EPISODE {} *********".format(episode))
 
             # Reset the envirnoment , start the episode and get the initial observation
@@ -42,7 +42,7 @@ class Sarsa:
             # Get the first action
             action1 = self.choose_action(state1)
         
-            for step in range(self.max_steps):
+            for step in range(self.max_steps_per_episode):
                 # Visualizing the training
                 self.env.render()
                 
@@ -76,7 +76,7 @@ class Sarsa:
             self.rewards_all_episodes.append(rewards_current_episode)
 
         # Calculate and print the average reward per 10 episodes
-        rewards_per_thousand_episodes = np.split(np.array(self.rewards_all_episodes), self.total_episodes / 100)
+        rewards_per_thousand_episodes = np.split(np.array(self.rewards_all_episodes), self.num_episodes / 100)
         count = 100
         print("********** Average  reward per thousand episodes **********\n")
 
@@ -85,7 +85,7 @@ class Sarsa:
             count += 100
 
         # Evaluating the performance
-        print ("Performace: " +  str(sum(self.rewards_all_episodes)/self.total_episodes))
+        print ("Performace: " +  str(sum(self.rewards_all_episodes)/self.num_episodes))
             
         # Print updated Q-table
         print("\n\n********** Q-table **********\n")
@@ -109,5 +109,5 @@ class Sarsa:
         action2 = self.dicti[action2]
 
         predict = self.q_table[state, action]
-        target = reward + self.gamma * self.q_table[state2, action2]
-        self.q_table[state, action] = self.q_table[state, action] + self.alpha * (target - predict)
+        target = reward + self.discount_rate * self.q_table[state2, action2]
+        self.q_table[state, action] = self.q_table[state, action] + self.learning_rate * (target - predict)
