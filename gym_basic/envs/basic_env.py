@@ -2,24 +2,26 @@ import gym
 import numpy as np
 import itertools
 
-NUM_BOTTLES = 2
-BOTTLE_SIZE = 3
+NUM_BOTTLES = 5
+BOTTLE_SIZE = 4
 
-STATES = {
-    tuple([tuple([1, 1, 0]), tuple([1, 0, 0])]) : 0,
-    tuple([tuple([1, 1, 1]), tuple([0, 0, 0])]) : 1,
-    tuple([tuple([1, 0, 0]), tuple([1, 1, 0])]) : 2,
-    tuple([tuple([0, 0, 0]), tuple([1, 1, 1])]) : 3,
-}
+STATES = {}
+
 
 class BallSortPuzzle():
     def __init__(self, board):
         self.board = board
         self.actions = self.getActions()
+        self.numStatesDiscovered = 0
     
     def getState(self):
         tup = tuple(tuple(sub) for sub in self.board)
-        return STATES[tup]
+        if tup not in STATES.keys():    
+            STATES[tup] = self.numStatesDiscovered
+            self.numStatesDiscovered += 1
+            return STATES[tup]
+        else:
+            return STATES[tup]
 
     def applyMovement(self, action):
         # Invalid Move: stay in the space state
@@ -103,7 +105,7 @@ class BasicEnv(gym.Env):
 
         # Observation Space
         # Number of States
-        self.observation_space = gym.spaces.Discrete(4)
+        self.observation_space = gym.spaces.Discrete(99999)
 
         # Init Game
         self.reset()
@@ -132,7 +134,7 @@ class BasicEnv(gym.Env):
             print("\n", end="")
 
     def reset(self):
-        self.game = BallSortPuzzle([[1, 1, 0], [1, 0, 0]])
+        self.game = BallSortPuzzle([[1, 2, 3, 1], [1, 2, 3, 3], [2, 3, 1, 2], [0, 0, 0, 0], [0, 0, 0, 0]])
         self.state = 0
         self.iteration = 0
         self.done = False    
