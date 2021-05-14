@@ -2,6 +2,8 @@ import gym
 import numpy as np
 import itertools
 
+from math import factorial
+
 NUM_BOTTLES = 5
 BOTTLE_SIZE = 4
 
@@ -106,6 +108,16 @@ class BasicEnv(gym.Env):
         # Observation Space
         # Number of States
         self.observation_space = gym.spaces.Discrete(99999)
+
+        # Observation Space
+        value = 1
+        k = BOTTLE_SIZE
+        for i in range(BOTTLE_SIZE-1):
+            n = (NUM_BOTTLES*BOTTLE_SIZE - BOTTLE_SIZE * i)
+            value *= factorial(n) / (factorial(k) * factorial(n - k))
+        
+        print(value)
+        self.observation_space = gym.spaces.Discrete(int(value))
 
         # Init Game
         self.reset()
