@@ -1,3 +1,4 @@
+
 import gym
 import numpy as np
 import itertools
@@ -8,7 +9,6 @@ NUM_BOTTLES = 5
 BOTTLE_SIZE = 4
 
 STATES = {}
-
 
 class BallSortPuzzle():
     def __init__(self, board):
@@ -47,7 +47,7 @@ class BallSortPuzzle():
         self.board[action[0]][first] = 0
         self.board[action[1]][second] = color
 
-        return -1
+        return self.heuristic()
 
     def checkColor(self, color, bottle, index):
         if index == -1:
@@ -67,6 +67,15 @@ class BallSortPuzzle():
             if i == 0:
                 return idx
         return -1
+
+    def heuristic(self):
+        value = 0
+        for i in self.board:
+            if len(i) == 0:
+                continue
+            if not all(element == i[0] for element in i):
+                value -= 1
+        return value
 
     def isGoal(self):
         for i in self.board:
@@ -98,7 +107,7 @@ class BallSortPuzzle():
         return isStuck
 
 
-class BasicEnv(gym.Env):
+class BallSortEnv(gym.Env):
     def __init__(self):
         # Action Space
         # (X, Y) ->
@@ -117,7 +126,7 @@ class BasicEnv(gym.Env):
             value *= factorial(n) / (factorial(k) * factorial(n - k))
         
         print(value)
-        self.observation_space = gym.spaces.Discrete(int(value))
+        #self.observation_space = gym.spaces.Discrete(int(value))
 
         # Init Game
         self.reset()

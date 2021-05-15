@@ -43,7 +43,7 @@ class QLearning:
             
             for step in range(self.max_steps_per_episode):
                 # Visualizing the training
-                self.env.render()
+                #self.env.render()
 
                 # Exploration -exploitation trade-off
                 exploration_rate_threshold = random.uniform(0,1)

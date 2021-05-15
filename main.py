@@ -6,7 +6,7 @@ import json
 import sys
 
 # Build Environment
-env = gym.make("gym_basic:basic-v0")
+env = gym.make("ball_sort_game:basic-v0")
 
 def parseJson(path):
     with open(path) as json_file:
@@ -32,9 +32,9 @@ if __name__ == "__main__":
         print("Config file not found. More information on README")
         exit(-1)
 
-    if algorithm == 'sarsa':
+    if algorithm == 'qlearning':
         QLearning(env, data).run()
-    elif algorithm == 'qlearning':
+    elif algorithm == 'sarsa':
         Sarsa(env, data).run()
     else:
         print("Valid algorithms:")

@@ -44,7 +44,7 @@ class Sarsa:
         
             for step in range(self.max_steps_per_episode):
                 # Visualizing the training
-                self.env.render()
+                #self.env.render()
                 
                 # Getting the next state
                 state2, reward, done, info = self.env.step(action1)
