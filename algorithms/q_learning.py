@@ -1,11 +1,17 @@
 import gym
 import random
 import numpy as np
+import csv
 
+import time
+
+from utils.logger import Logger
+    
 class QLearning:
     def __init__(self, env, data):
         self.env = env
-
+        self.render = False
+        self.logger = Logger("QLearning")
         # Set the action and state spaces
         self.dicta, self.dicti = self.env.game.actions
         action_space_size = len(self.dicta)
@@ -16,17 +22,16 @@ class QLearning:
 
         # Set hyperparameters for Q-learning
         # Defining the different parameters
-        self.num_episodes = data['num_episodes'] # Total episodes
+        self.num_episodes = data['num_episodes']
         self.max_steps_per_episode = data['max_steps_per_episode']
 
-        self.learning_rate = data['learning_rate'] # Learning rate (learning_rate)
-        self.discount_rate = data['discount_rate'] # Discounting rate (discount_rate)
+        self.learning_rate = data['learning_rate'] # Alpha
+        self.discount_rate = data['discount_rate'] # Gamma
 
-        # Exploration Parameters
-        self.exploration_rate = data['exploration_rate']  # Exploration rate (epsilon)
-        self.max_exploration_rate = data['max_exploration_rate'] # Exploration probability at start
-        self.min_exploration_rate = data['min_exploration_rate'] # Minimum exploration probability
-        self.exploration_decay_rate = data['exploration_decay_rate'] # Exponential decay rate for exploration prob (if we decrease it, will learn slower)
+        self.exploration_rate = data['exploration_rate']  # Epsilon
+        self.max_exploration_rate = data['max_exploration_rate'] # Max Epsilon
+        self.min_exploration_rate = data['min_exploration_rate'] # Min Epsilon
+        self.exploration_decay_rate = data['exploration_decay_rate'] # Decay Rate
 
         # List of rewards
         self.rewards_all_episodes = []
@@ -34,31 +39,27 @@ class QLearning:
     def run(self):
         # Q-Learning algorithm
         for episode in range(self.num_episodes):
-            print("********* EPISODE {} *********".format(episode))
+            print("-> EPISODE {} <-".format(episode))
 
             # Reset the environment
             state = self.env.reset()
             done = False
             rewards_current_episode = 0
             
+            start_time = time.time()
             for step in range(self.max_steps_per_episode):
                 # Visualizing the training
-                self.env.render()
+                if self.render: self.env.render()
 
-                # Exploration -exploitation trade-off
+
                 exploration_rate_threshold = random.uniform(0,1)
-
-                ## If this number > greater than epsilon --> exploitation 
                 if exploration_rate_threshold > self.exploration_rate: 
                     action = np.argmax(self.q_table[state,:])
-                    action = self.dicta[action]
-                # Else doing a random choice --> exploration
                 else:
                     action = self.env.action_space.sample()
                 
                 # Take the action and observe the outcome state and reward
                 new_state, reward, done, info = self.env.step(action)
-                action = self.dicti[action]
 
                 # Update Q-table for Q(s,a)
                 # Q(s,a):= Q(s,a) + lr [R(s,a) + gamma * max Q(s',a') - Q(s,a)]
@@ -73,7 +74,7 @@ class QLearning:
                 # If done : finish episode
                 if done == True: 
                     print("Found Solution")
-                    self.env.render()
+                    if render: self.env.render()
                     break
                     
             # Exploration rate decay
@@ -82,19 +83,21 @@ class QLearning:
                 (self.max_exploration_rate - self.min_exploration_rate) * np.exp(-self.exploration_decay_rate * episode)
             
             self.rewards_all_episodes.append(rewards_current_episode)
+            end_time = time.time()
+            elapsed = end_time - start_time
+            self.logger.writeLog(episode, rewards_current_episode)
             
         # Calculate and print the average reward per 10 episodes
         rewards_per_thousand_episodes = np.split(np.array(self.rewards_all_episodes), self.num_episodes / 100)
         count = 100
-        print("********** Average  reward per thousand episodes **********\n")
 
         for r in rewards_per_thousand_episodes:
-            print(count, ": ", str(sum(r / 100)))
+            self.logger.writeAvgRewards(count, r)
             count += 100
             
         # Print updated Q-table
-        # print(dicta)
-        print("\n\n********** Q-table **********\n")
-        print(self.q_table)
-        print ("Performace: " +  str(sum(self.rewards_all_episodes)/self.num_episodes))
+        # Save Q-Table
+        # np.savetxt('2darray.csv', self.q_table, delimiter=',', fmt='%d')
+
+        print("Performace: " +  str(sum(self.rewards_all_episodes)/self.num_episodes))
         print("Exploration Rate: ", self.exploration_rate)

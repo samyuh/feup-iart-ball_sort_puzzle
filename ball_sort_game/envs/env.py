@@ -3,10 +3,10 @@ import gym
 import numpy as np
 import itertools
 
-from math import factorial
+from math import factorial, perm
 
-NUM_BOTTLES = 3
-BOTTLE_SIZE = 3
+NUM_BOTTLES = 5
+BOTTLE_SIZE = 4
 
 STATES = {}
 
@@ -27,8 +27,8 @@ class BallSortPuzzle():
 
     def applyMovement(self, action):
 
-        print("action = ", action)
-
+        print("action = ", self.actions[0][action])
+        action = self.actions[0][action]
         # Invalid Move: stay in the space state
         if (action[0] == action[1]):
             print("heuristic = ", -999)
@@ -97,7 +97,8 @@ class BallSortPuzzle():
         return True
     
     def getActions(self):
-        l = list(itertools.product(list(range(0, NUM_BOTTLES)), repeat=2))
+        l = list(itertools.permutations(list(range(0, NUM_BOTTLES)), r=2))
+        print(dict(zip(l, range(len(l)))))
         return dict(zip(range(len(l)),l)), dict(zip(l, range(len(l))))
 
     def isStuck(self):
@@ -123,7 +124,7 @@ class BallSortEnv(gym.Env):
         # Action Space
         # (X, Y) ->
         #   Where X is the Bottle where the Ball is picked and Y the Bottle where the Ball is put
-        self.action_space = gym.spaces.Tuple((gym.spaces.Discrete(NUM_BOTTLES), gym.spaces.Discrete(NUM_BOTTLES)))
+        self.action_space = gym.spaces.Discrete(perm(NUM_BOTTLES, 2))
 
         # Observation Space
         # Number of States
@@ -153,7 +154,7 @@ class BallSortEnv(gym.Env):
 
         if done:
             print("heuristic = ", 10)
-            reward = 10
+            reward = 1000
         elif stuck:
             print("heuristic = ", -10)
             reward = -10
@@ -168,7 +169,7 @@ class BallSortEnv(gym.Env):
             print("\n", end="")
 
     def reset(self):
-        self.game = BallSortPuzzle([[1, 2, 1], [1, 2, 2], [0, 0, 0]])
+        self.game = BallSortPuzzle([[1, 2, 3, 1], [1, 2, 3, 3], [2, 3, 1, 2], [0, 0, 0, 0], [0, 0, 0, 0]])
         self.state = 0
         self.iteration = 0
         self.done = False    
