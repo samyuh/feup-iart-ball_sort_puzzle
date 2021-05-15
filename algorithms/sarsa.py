@@ -1,35 +1,25 @@
 import numpy as np
 import gym
 
-class Sarsa:
-    def __init__(self, env, data):
-        self.env = env
+from algorithms.algorithm import Algorithm
 
+class Sarsa(Algorithm):
+    def __init__(self, env, data, render=None, log=None):
+        super().__init__(env, data)
         # Set the action and state spaces
         self.action_space_size = self.env.action_space.n
         self.state_space_size = self.env.observation_space.n
 
         # Initializing the Q-matrix
         self.q_table = np.zeros((self.state_space_size, self.action_space_size))
-        
-        # Defining the different parameters
-        self.num_episodes = data['num_episodes'] # Total episodes
-        self.max_steps_per_episode = data['max_steps_per_episode']
-        self.learning_rate = data['learning_rate'] # Learning rate (learning_rate)
-        self.discount_rate = data['discount_rate'] # Discounting rate (discount_rate)
-        self.exploration_rate = data['exploration_rate']  # Exploration rate (epsilon)
-        self.max_exploration_rate = data['max_exploration_rate'] # Exploration probability at start
-        self.min_exploration_rate = data['min_exploration_rate'] # Minimum exploration probability
-        self.exploration_decay_rate = data['exploration_decay_rate'] # Exponential decay rate for exploration prob (if we decrease it, will learn slower)
 
         # List of rewards
         self.rewards_all_episodes = []
 
     def run(self):
-        
         # Starting the SARSA learning
         for episode in range(self.num_episodes):
-            print("********* EPISODE {} *********".format(episode))
+            print("*** EPISODE {} ***".format(episode))
 
             # Reset the envirnoment , start the episode and get the initial observation
             state1 = self.env.reset()
@@ -75,7 +65,7 @@ class Sarsa:
         # Calculate and print the average reward per 10 episodes
         rewards_per_thousand_episodes = np.split(np.array(self.rewards_all_episodes), self.num_episodes / 100)
         count = 100
-        print("********** Average  reward per thousand episodes **********\n")
+        print("*** Average  reward per thousand episodes ***\n")
 
         for r in rewards_per_thousand_episodes:
             print(count, ": ", str(sum(r / 100)))
@@ -85,7 +75,7 @@ class Sarsa:
         print ("Performace: " +  str(sum(self.rewards_all_episodes)/self.num_episodes))
             
         # Print updated Q-table
-        print("\n\n********** Q-table **********\n")
+        print("\n\n*** Q-table ***\n")
         print(self.q_table)
 
 

@@ -6,14 +6,15 @@ import csv
 import time
 
 from utils.logger import Logger
+from algorithms.algorithm import Algorithm
     
-class QLearning:
-    def __init__(self, env, data, render = False, log = True):
-        self.env = env
+class QLearning(Algorithm):
+    def __init__(self, env, data, render=True, log=True):
+        super().__init__(env, data)
+        
+        # Render and Log
         self.render = render
-
-        if log:
-            self.logger = Logger("QLearning")
+        if log: self.logger = Logger("QLearning")
 
         # Set the action and state spaces
         action_space_size = self.env.action_space.n
@@ -22,24 +23,13 @@ class QLearning:
         # Create Q-table
         self.q_table = np.zeros((state_space_size, action_space_size))
 
-        # Set hyperparameters for Q-learning
-        # Defining the different parameters
-        self.num_episodes = data['num_episodes']
-        self.max_steps_per_episode = data['max_steps_per_episode']
-        self.learning_rate = data['learning_rate'] # Alpha
-        self.discount_rate = data['discount_rate'] # Gamma
-        self.exploration_rate = data['exploration_rate']  # Epsilon
-        self.max_exploration_rate = data['max_exploration_rate'] # Max Epsilon
-        self.min_exploration_rate = data['min_exploration_rate'] # Min Epsilon
-        self.exploration_decay_rate = data['exploration_decay_rate'] # Decay Rate
-
         # List of rewards
         self.rewards_all_episodes = []
 
     def run(self):
         # Q-Learning algorithm
         for episode in range(self.num_episodes):
-            print("-> EPISODE {} <-".format(episode))
+            print("*** EPISODE {} ***".format(episode))
 
             # Reset the environment
             state = self.env.reset()
@@ -73,7 +63,6 @@ class QLearning:
                 # If done : finish episode
                 if done == True: 
                     print("Found Solution")
-                    if self.render: self.env.render()
                     break
                     
             # Exploration rate decay

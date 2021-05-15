@@ -1,12 +1,10 @@
+import sys
+import json
 import gym
+from gym.envs.registration import register
+
 from algorithms.q_learning import QLearning
 from algorithms.sarsa import Sarsa
-
-import json
-import sys
-
-# Build Environment
-env = gym.make("ball_sort_game:basic-v0")
 
 def parseJson(path):
     with open(path) as json_file:
@@ -15,17 +13,17 @@ def parseJson(path):
 if __name__ == "__main__":
     if len(sys.argv) < 3:
         print("Bad arguments\nUsage:")
-        print(" main.py [CONFIG] [ALGORITHM] <-log> <-render>\n\n")
-        print("OPTIONS:")
-        print("     -log TODO")
-        print("         Save Logs")
-        print("     -render TODO")
-        print("         Render the game through each episode")
+        print(" main.py [CONFIG] [ALGORITHM] {<-log> <-render> <-default>}\n\n")
         print("Configuration Files:")
         print("     - More information on README. You can also use one of your config file, by passing \"default.json\" without quotes\n")
         print("Algorithms:")
         print("     - qlearning")
         print("     - sarsa\n")
+        print("OPTIONS:")
+        print("     -log TODO")
+        print("         Save Logs")
+        print("     -render TODO")
+        print("         Render the game through each episode")
         exit(-1)
 
     configFilePath = './config/{}'.format(sys.argv[1])
@@ -37,10 +35,21 @@ if __name__ == "__main__":
         print("Config file not found. More information on README")
         exit(-1)
 
+    # Build Environment
+    register(id='ball_sort-v0',
+            entry_point='gym_game.envs:BallSortEnv',
+            kwargs={'board' : data['board'], 
+                'bottle_size' : data['bottle_size'],
+                'num_bottles' : data['num_bottles']
+                },
+    )
+    env = gym.make("gym_game:ball_sort-v0")
+
+    # Choose Algorithm
     if algorithm == 'qlearning':
-        QLearning(env, data).run()
+        QLearning(env, data['param'], render=False, log=True).run()
     elif algorithm == 'sarsa':
-        Sarsa(env, data).run()
+        Sarsa(env, data['param'], render=True, log=True).run()
     else:
         print("Valid algorithms:")
         print("     - qlearning")

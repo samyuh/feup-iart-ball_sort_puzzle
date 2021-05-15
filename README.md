@@ -1,6 +1,5 @@
 # Reinforcement Learning - Ball Sort Puzzle
 
-
 PYTHON VERSION -> 3.8.9
 pip install gym
 pip install tensorflow
@@ -18,14 +17,19 @@ Create a configuration file under the ./config directory (or use one of). The co
 
 ```json
 {
-    "num_episodes" : 10000,
-    "max_steps_per_episode" : 1000,
-    "learning_rate" : 0.4,
-    "discount_rate" : 0.95,
-    "exploration_rate" : 1,    
-    "max_exploration_rate" : 1,
-    "min_exploration_rate" : 0.01,
-    "exploration_decay_rate" : 0.01
+    "board" : [[1, 2, 1], [1, 2, 2], [0, 0, 0]],
+    "bottle_size" : 3,
+    "num_bottles" : 3,
+    "param" : {
+        "num_episodes" : 100000,
+        "max_steps_per_episode" : 20,
+        "learning_rate" : 0.1,
+        "discount_rate" : 0.95,
+        "exploration_rate" : 1,    
+        "max_exploration_rate" : 1,
+        "min_exploration_rate" : 0.001,
+        "exploration_decay_rate" : 0.001
+    }
 }
 ```
 

@@ -1,11 +1,7 @@
+from itertools import permutations 
+from math import perm
 
-import gym
-import numpy as np
-import itertools
-
-from math import factorial, perm
-
-class BallSortPuzzle():
+class BallSortPuzzle:
     def __init__(self, board, bottle_size, num_bottles):
         self.board = board
         self.bottle_size = bottle_size
@@ -88,12 +84,12 @@ class BallSortPuzzle():
         return True
     
     def getActions(self):
-        l = list(itertools.permutations(list(range(0, self.num_bottles)), 2))
+        l = list(permutations(list(range(0, self.num_bottles)), 2))
         return dict(zip(range(len(l)),l))
 
     def isStuck(self):
         isStuck = True
-        allActions = list(itertools.permutations(list(range(0, self.num_bottles)), 2))
+        allActions = list(permutations(list(range(0, self.num_bottles)), 2))
         for a in allActions:
             if a[0] == a[1]:
                 continue
@@ -105,67 +101,3 @@ class BallSortPuzzle():
                 continue
             return False
         return isStuck
-
-
-class BallSortEnv(gym.Env):
-    def __init__(self):
-        self.bottle_size = 3
-        self.num_bottles = 3
-
-        # Action Space
-        # (Z) ->
-        #  Which is mapped to a value (X, Y), where: 
-        #       X is the bottle the ball is picked
-        #       Y is the bottle the ball is put on
-        self.action_space = gym.spaces.Discrete(perm(self.num_bottles, 2))
-
-        # Observation Space
-        # Number of States
-        self.observation_space = gym.spaces.Discrete(99999)
-
-        # Observation Space - 
-        # TODO: Find a way to get the exact number os states
-        # value = 1
-        # k = BOTTLE_SIZE
-        # for i in range(BOTTLE_SIZE-1):
-        #     n = (NUM_BOTTLES*BOTTLE_SIZE - BOTTLE_SIZE * i)
-        #     value *= factorial(n) / (factorial(k) * factorial(n - k))
-        
-        # print(value)
-        #self.observation_space = gym.spaces.Discrete(int(value))
-
-        # Init Game
-        self.reset()
- 
-    def step(self, action):
-        #assert self.action_space.contains(action)
-
-        reward = self.game.applyMovement(action)
-        done = self.game.isGoal()
-        stuck = self.game.isStuck()
-        state = self.game.getState()
-
-        if done:
-            reward = 10
-        elif stuck:
-            reward = -10
-        
-        self.iteration += 1
-        
-        return state, reward, done or stuck, self.game.board
-    
-    def render(self, mode="human", close=False):
-        print("Bottles - Move {}".format(self.iteration))
-        for idx in range(self.bottle_size):
-            for bottle_num in range(self.num_bottles):
-                print("|" + str(self.game.board[bottle_num][self.bottle_size - idx - 1]) + "|", end="")
-            print("\n", end="")
-
-    def reset(self):
-        self.game = BallSortPuzzle([[1, 2, 1], [1, 2, 2], [0, 0, 0]], self.bottle_size, self.num_bottles)
-
-        self.iteration = 0
-        self.state = 0
-        self.done = False    
-
-        return self.state
