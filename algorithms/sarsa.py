@@ -51,8 +51,7 @@ class Sarsa(Algorithm):
 
                 # If at the end of learning process
                 if done:
-                    print("Found Solution")
-                    self.env.render()
+                    print("Found Solution - {} - {}".format(episode, step))
                     break
             
             # Exploration rate decay
@@ -61,6 +60,7 @@ class Sarsa(Algorithm):
                 (self.max_exploration_rate - self.min_exploration_rate) * np.exp(-self.exploration_decay_rate * episode)
 
             self.rewards_all_episodes.append(rewards_current_episode)
+            print(rewards_current_episode)
 
         # Calculate and print the average reward per 10 episodes
         rewards_per_thousand_episodes = np.split(np.array(self.rewards_all_episodes), self.num_episodes / 100)

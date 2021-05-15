@@ -1,10 +1,10 @@
 {
-    "board" : [[1, 2, 1], [1, 2, 2], [0, 0, 0]],
-    "bottle_size" : 3,
-    "num_bottles" : 3,
+    "board" : [[1, 2, 3, 1], [1, 2, 3, 3], [2, 3, 1, 2], [0, 0, 0, 0], [0, 0, 0, 0]],
+    "bottle_size" : 4,
+    "num_bottles" : 5,
     "param" : {
-        "num_episodes" : 100000,
-        "max_steps_per_episode" : 20,
+        "num_episodes" : 100000000,
+        "max_steps_per_episode" : 300,
         "learning_rate" : 0.1,
         "discount_rate" : 0.95,
         "exploration_rate" : 1,    

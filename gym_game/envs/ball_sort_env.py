@@ -20,7 +20,7 @@ class BallSortEnv(gym.Env):
 
         # Observation Space
         # Number of States
-        #self.observation_space = gym.spaces.Discrete(99999)
+        self.observation_space = gym.spaces.Discrete(99999)
 
         # Observation Space - 
         # TODO: Find a way to get the exact number os states
@@ -31,7 +31,7 @@ class BallSortEnv(gym.Env):
             value *= factorial(n) / (factorial(k) * factorial(n - k))
         
         # print(value)
-        self.observation_space = gym.spaces.Discrete(int(value))
+        #self.observation_space = gym.spaces.Discrete(int(value))
 
         # Init Game
         self.reset()
@@ -40,6 +40,7 @@ class BallSortEnv(gym.Env):
         # TODO: Learn if assert is needed or not
         #assert self.action_space.contains(action)
 
+        
         reward = self.game.applyMovement(action)
         done = self.game.isGoal()
         stuck = self.game.isStuck()

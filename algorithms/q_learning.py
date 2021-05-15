@@ -29,7 +29,8 @@ class QLearning(Algorithm):
     def run(self):
         # Q-Learning algorithm
         for episode in range(self.num_episodes):
-            print("*** EPISODE {} ***".format(episode))
+            if episode % 1000 == 0:
+                print("*** EPISODE {} ***".format(episode))
 
             # Reset the environment
             state = self.env.reset()
@@ -62,7 +63,7 @@ class QLearning(Algorithm):
                 
                 # If done : finish episode
                 if done == True: 
-                    print("Found Solution")
+                    print("Found Solution - {} - {}".format(episode, step))
                     break
                     
             # Exploration rate decay
