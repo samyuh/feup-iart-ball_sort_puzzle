@@ -36,14 +36,14 @@ if __name__ == "__main__":
         exit(-1)
 
     # Build Environment
-    register(id='ball_sort-v0',
+    register(id='ball_sort-v1',
             entry_point='gym_game.envs:BallSortEnv',
             kwargs={'board' : data['board'], 
                 'bottle_size' : data['bottle_size'],
                 'num_bottles' : data['num_bottles']
                 },
     )
-    env = gym.make("gym_game:ball_sort-v0")
+    env = gym.make("gym_game:ball_sort-v1")
 
     # Choose Algorithm
     if algorithm == 'qlearning':
