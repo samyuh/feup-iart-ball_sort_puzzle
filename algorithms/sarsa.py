@@ -30,8 +30,6 @@ class Sarsa:
         self.rewards_all_episodes = []
 
     def run(self):
-        # Initializing the reward
-        rewards_current_episode = 0
         
         # Starting the SARSA learning
         for episode in range(self.num_episodes):
@@ -41,6 +39,9 @@ class Sarsa:
             state1 = self.env.reset()
             # Get the first action
             action1 = self.choose_action(state1)
+
+            # Initializing the reward
+            rewards_current_episode = 0
         
             for step in range(self.max_steps_per_episode):
                 # Visualizing the training
