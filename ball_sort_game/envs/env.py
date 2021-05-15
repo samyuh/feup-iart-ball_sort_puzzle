@@ -5,8 +5,8 @@ import itertools
 
 from math import factorial
 
-NUM_BOTTLES = 5
-BOTTLE_SIZE = 4
+NUM_BOTTLES = 3
+BOTTLE_SIZE = 3
 
 STATES = {}
 
@@ -26,8 +26,12 @@ class BallSortPuzzle():
             return STATES[tup]
 
     def applyMovement(self, action):
+
+        print("action = ", action)
+
         # Invalid Move: stay in the space state
         if (action[0] == action[1]):
+            print("heuristic = ", -999)
             return -999
 
         # Get pieces to toggle
@@ -35,18 +39,21 @@ class BallSortPuzzle():
 
         # Invalid Move
         if first == -1 or second == -1:
+            print("heuristic = ", -999)
             return -999
 
         # Get Color to Swap
         color = self.board[action[0]][first]
         # Invalid Move: a ball must be placed on top of a ball of the same color or on an empty tube
         if not self.checkColor(color, self.board[action[1]], second-1):
+            print("heuristic = ", -999)
             return -999
 
         # Do the action
         self.board[action[0]][first] = 0
         self.board[action[1]][second] = color
 
+        print("heuristic = ", self.heuristic())
         return self.heuristic()
 
     def checkColor(self, color, bottle, index):
@@ -70,11 +77,15 @@ class BallSortPuzzle():
 
     def heuristic(self):
         value = 0
-        for i in self.board:
-            if len(i) == 0:
-                continue
-            if not all(element == i[0] for element in i):
-                value -= 1
+        for tubeIdx, tube in enumerate(self.board):
+            prevBall = -1
+            for idx, ball in enumerate(tube):
+                if prevBall != -1 and prevBall != ball and ball != 0:
+                    for i in range(idx, len(tube)):
+                        if tube[i] != 0:
+                            value -= 1
+                    break
+                prevBall = ball
         return value
 
     def isGoal(self):
@@ -141,8 +152,10 @@ class BallSortEnv(gym.Env):
         state = self.game.getState()
 
         if done:
+            print("heuristic = ", 10)
             reward = 10
         elif stuck:
+            print("heuristic = ", -10)
             reward = -10
         
         return state, reward, done or stuck, self.game.board
@@ -155,7 +168,7 @@ class BallSortEnv(gym.Env):
             print("\n", end="")
 
     def reset(self):
-        self.game = BallSortPuzzle([[1, 2, 3, 1], [1, 2, 3, 3], [2, 3, 1, 2], [0, 0, 0, 0], [0, 0, 0, 0]])
+        self.game = BallSortPuzzle([[1, 2, 1], [1, 2, 2], [0, 0, 0]])
         self.state = 0
         self.iteration = 0
         self.done = False    
