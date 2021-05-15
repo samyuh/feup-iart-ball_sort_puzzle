@@ -6,8 +6,7 @@ class Sarsa:
         self.env = env
 
         # Set the action and state spaces
-        self.dicta, self.dicti = self.env.game.actions
-        self.action_space_size = len(self.dicta)
+        self.action_space_size = self.env.action_space.n
         self.state_space_size = self.env.observation_space.n
 
         # Initializing the Q-matrix
@@ -16,11 +15,8 @@ class Sarsa:
         # Defining the different parameters
         self.num_episodes = data['num_episodes'] # Total episodes
         self.max_steps_per_episode = data['max_steps_per_episode']
-
         self.learning_rate = data['learning_rate'] # Learning rate (learning_rate)
         self.discount_rate = data['discount_rate'] # Discounting rate (discount_rate)
-
-        # Exploration Parameters
         self.exploration_rate = data['exploration_rate']  # Exploration rate (epsilon)
         self.max_exploration_rate = data['max_exploration_rate'] # Exploration probability at start
         self.min_exploration_rate = data['min_exploration_rate'] # Minimum exploration probability
@@ -100,15 +96,11 @@ class Sarsa:
             action = self.env.action_space.sample()
         else:
             action = np.argmax(self.q_table[state, :])
-            action = self.dicta[action]
 
         return action
   
     # Function to learn the Q-value
     def update(self, state, state2, reward, action, action2):
-        action = self.dicti[action]
-        action2 = self.dicti[action2]
-
         predict = self.q_table[state, action]
         target = reward + self.discount_rate * self.q_table[state2, action2]
         self.q_table[state, action] = self.q_table[state, action] + self.learning_rate * (target - predict)

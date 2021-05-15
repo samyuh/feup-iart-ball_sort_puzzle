@@ -13,9 +13,14 @@ def parseJson(path):
         return json.load(json_file)
         
 if __name__ == "__main__":
-    if len(sys.argv) != 3:
+    if len(sys.argv) < 3:
         print("Bad arguments\nUsage:")
-        print(" main.py [CONFIG] [ALGORITHM]\n\n")
+        print(" main.py [CONFIG] [ALGORITHM] <-log> <-render>\n\n")
+        print("OPTIONS:")
+        print("     -log TODO")
+        print("         Save Logs")
+        print("     -render TODO")
+        print("         Render the game through each episode")
         print("Configuration Files:")
         print("     - More information on README. You can also use one of your config file, by passing \"default.json\" without quotes\n")
         print("Algorithms:")

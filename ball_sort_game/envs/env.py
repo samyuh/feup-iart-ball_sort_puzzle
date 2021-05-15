@@ -5,55 +5,46 @@ import itertools
 
 from math import factorial, perm
 
-NUM_BOTTLES = 5
-BOTTLE_SIZE = 4
-
-STATES = {}
-
 class BallSortPuzzle():
-    def __init__(self, board):
+    def __init__(self, board, bottle_size, num_bottles):
         self.board = board
+        self.bottle_size = bottle_size
+        self.num_bottles = num_bottles
+
         self.actions = self.getActions()
+
+        self.states = {}
         self.numStatesDiscovered = 0
     
     def getState(self):
         tup = tuple(tuple(sub) for sub in self.board)
-        if tup not in STATES.keys():    
-            STATES[tup] = self.numStatesDiscovered
+        if tup not in self.states.keys():    
+            self.states[tup] = self.numStatesDiscovered
             self.numStatesDiscovered += 1
-            return STATES[tup]
+            return self.states[tup]
         else:
-            return STATES[tup]
+            return self.states[tup]
 
     def applyMovement(self, action):
-
-        print("action = ", self.actions[0][action])
-        action = self.actions[0][action]
-        # Invalid Move: stay in the space state
-        if (action[0] == action[1]):
-            print("heuristic = ", -999)
-            return -999
-
+        action = self.actions[action]
         # Get pieces to toggle
         first, second = self.pickPiece(self.board[action[0]]), self.getFirstEmpty(self.board[action[1]])
 
         # Invalid Move
         if first == -1 or second == -1:
-            print("heuristic = ", -999)
             return -999
 
         # Get Color to Swap
         color = self.board[action[0]][first]
         # Invalid Move: a ball must be placed on top of a ball of the same color or on an empty tube
         if not self.checkColor(color, self.board[action[1]], second-1):
-            print("heuristic = ", -999)
             return -999
 
         # Do the action
         self.board[action[0]][first] = 0
         self.board[action[1]][second] = color
 
-        print("heuristic = ", self.heuristic())
+        # print("heuristic = ", self.heuristic())
         return self.heuristic()
 
     def checkColor(self, color, bottle, index):
@@ -67,7 +58,7 @@ class BallSortPuzzle():
         for idx, i in enumerate(targetBoard):
             if i == 0:
                 return idx - 1
-        return BOTTLE_SIZE - 1
+        return self.bottle_size - 1
 
     def getFirstEmpty(self, targetBoard):
         for idx, i in enumerate(targetBoard):
@@ -97,14 +88,12 @@ class BallSortPuzzle():
         return True
     
     def getActions(self):
-        l = list(itertools.permutations(list(range(0, NUM_BOTTLES)), r=2))
-        print(dict(zip(l, range(len(l)))))
-        return dict(zip(range(len(l)),l)), dict(zip(l, range(len(l))))
+        l = list(itertools.permutations(list(range(0, self.num_bottles)), 2))
+        return dict(zip(range(len(l)),l))
 
     def isStuck(self):
         isStuck = True
-
-        allActions = list(itertools.permutations(list(range(0, NUM_BOTTLES)), 2))
+        allActions = list(itertools.permutations(list(range(0, self.num_bottles)), 2))
         for a in allActions:
             if a[0] == a[1]:
                 continue
@@ -115,29 +104,34 @@ class BallSortPuzzle():
             if not self.checkColor(color, self.board[a[1]], second-1):
                 continue
             return False
-
         return isStuck
 
 
 class BallSortEnv(gym.Env):
     def __init__(self):
+        self.bottle_size = 3
+        self.num_bottles = 3
+
         # Action Space
-        # (X, Y) ->
-        #   Where X is the Bottle where the Ball is picked and Y the Bottle where the Ball is put
-        self.action_space = gym.spaces.Discrete(perm(NUM_BOTTLES, 2))
+        # (Z) ->
+        #  Which is mapped to a value (X, Y), where: 
+        #       X is the bottle the ball is picked
+        #       Y is the bottle the ball is put on
+        self.action_space = gym.spaces.Discrete(perm(self.num_bottles, 2))
 
         # Observation Space
         # Number of States
         self.observation_space = gym.spaces.Discrete(99999)
 
-        # Observation Space
-        value = 1
-        k = BOTTLE_SIZE
-        for i in range(BOTTLE_SIZE-1):
-            n = (NUM_BOTTLES*BOTTLE_SIZE - BOTTLE_SIZE * i)
-            value *= factorial(n) / (factorial(k) * factorial(n - k))
+        # Observation Space - 
+        # TODO: Find a way to get the exact number os states
+        # value = 1
+        # k = BOTTLE_SIZE
+        # for i in range(BOTTLE_SIZE-1):
+        #     n = (NUM_BOTTLES*BOTTLE_SIZE - BOTTLE_SIZE * i)
+        #     value *= factorial(n) / (factorial(k) * factorial(n - k))
         
-        print(value)
+        # print(value)
         #self.observation_space = gym.spaces.Discrete(int(value))
 
         # Init Game
@@ -146,32 +140,32 @@ class BallSortEnv(gym.Env):
     def step(self, action):
         #assert self.action_space.contains(action)
 
-        self.iteration += 1
         reward = self.game.applyMovement(action)
         done = self.game.isGoal()
         stuck = self.game.isStuck()
         state = self.game.getState()
 
         if done:
-            print("heuristic = ", 10)
-            reward = 1000
+            reward = 10
         elif stuck:
-            print("heuristic = ", -10)
             reward = -10
+        
+        self.iteration += 1
         
         return state, reward, done or stuck, self.game.board
     
     def render(self, mode="human", close=False):
         print("Bottles - Move {}".format(self.iteration))
-        for idx in range(BOTTLE_SIZE):
-            for bottle_num in range(NUM_BOTTLES):
-                print("|" + str(self.game.board[bottle_num][BOTTLE_SIZE - idx - 1]) + "|", end="")
+        for idx in range(self.bottle_size):
+            for bottle_num in range(self.num_bottles):
+                print("|" + str(self.game.board[bottle_num][self.bottle_size - idx - 1]) + "|", end="")
             print("\n", end="")
 
     def reset(self):
-        self.game = BallSortPuzzle([[1, 2, 3, 1], [1, 2, 3, 3], [2, 3, 1, 2], [0, 0, 0, 0], [0, 0, 0, 0]])
-        self.state = 0
+        self.game = BallSortPuzzle([[1, 2, 1], [1, 2, 2], [0, 0, 0]], self.bottle_size, self.num_bottles)
+
         self.iteration = 0
+        self.state = 0
         self.done = False    
 
         return self.state

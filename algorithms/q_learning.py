@@ -8,13 +8,15 @@ import time
 from utils.logger import Logger
     
 class QLearning:
-    def __init__(self, env, data):
+    def __init__(self, env, data, render = False, log = True):
         self.env = env
-        self.render = False
-        self.logger = Logger("QLearning")
+        self.render = render
+
+        if log:
+            self.logger = Logger("QLearning")
+
         # Set the action and state spaces
-        self.dicta, self.dicti = self.env.game.actions
-        action_space_size = len(self.dicta)
+        action_space_size = self.env.action_space.n
         state_space_size = self.env.observation_space.n
 
         # Create Q-table
@@ -24,10 +26,8 @@ class QLearning:
         # Defining the different parameters
         self.num_episodes = data['num_episodes']
         self.max_steps_per_episode = data['max_steps_per_episode']
-
         self.learning_rate = data['learning_rate'] # Alpha
         self.discount_rate = data['discount_rate'] # Gamma
-
         self.exploration_rate = data['exploration_rate']  # Epsilon
         self.max_exploration_rate = data['max_exploration_rate'] # Max Epsilon
         self.min_exploration_rate = data['min_exploration_rate'] # Min Epsilon
@@ -51,7 +51,6 @@ class QLearning:
                 # Visualizing the training
                 if self.render: self.env.render()
 
-
                 exploration_rate_threshold = random.uniform(0,1)
                 if exploration_rate_threshold > self.exploration_rate: 
                     action = np.argmax(self.q_table[state,:])
@@ -74,7 +73,7 @@ class QLearning:
                 # If done : finish episode
                 if done == True: 
                     print("Found Solution")
-                    if render: self.env.render()
+                    if self.render: self.env.render()
                     break
                     
             # Exploration rate decay
