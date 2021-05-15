@@ -20,9 +20,6 @@ class BallSortEnv(gym.Env):
 
         # Observation Space
         # Number of States
-        self.observation_space = gym.spaces.Discrete(99999)
-
-        # Observation Space - 
         # TODO: Find a way to get the exact number os states
         value = 1
         k = self.bottle_size
@@ -30,26 +27,20 @@ class BallSortEnv(gym.Env):
             n = (self.num_bottles*self.bottle_size - self.bottle_size * i)
             value *= factorial(n) / (factorial(k) * factorial(n - k))
         
-        # print(value)
-        #self.observation_space = gym.spaces.Discrete(int(value))
+        print(value)
+        self.observation_space = gym.spaces.Discrete(30000000)
 
         # Init Game
         self.reset()
  
     def step(self, action):
-        # TODO: Learn if assert is needed or not
-        #assert self.action_space.contains(action)
-
-        
         reward = self.game.applyMovement(action)
         done = self.game.isGoal()
         stuck = self.game.isStuck()
         state = self.game.getState()
 
-        if done:
-            reward = 10
-        elif stuck:
-            reward = -10
+        if done: reward = 10
+        elif stuck: reward = -10
         
         self.iteration += 1
         
@@ -63,10 +54,7 @@ class BallSortEnv(gym.Env):
             print("\n", end="")
 
     def reset(self):
-        #self.game = BallSortPuzzle([[1, 2, 1], [1, 2, 2], [0, 0, 0]], self.bottle_size, self.num_bottles)
         # TODO: check if orig board is the same at start of each episode
-        #print(self.orig_board)
-
         board_copy = deepcopy(self.orig_board)
         self.game = BallSortPuzzle(board_copy, self.bottle_size, self.num_bottles)
 
