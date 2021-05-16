@@ -40,9 +40,14 @@ if __name__ == "__main__":
             entry_point='gym_game.envs:BallSortEnv',
             kwargs={'board' : data['board'], 
                 'bottle_size' : data['bottle_size'],
-                'num_bottles' : data['num_bottles']
+                'num_bottles' : data['num_bottles'],
+                'empty_spaces' : data['empty_spaces'],
+                'num_balls' : data['num_balls'],
+                'ball_per_color' : data['ball_per_color'],
+                'num_colors' : data['num_colors'],
                 },
     )
+    
     env = gym.make("gym_game:ball_sort-v1")
 
     # Choose Algorithm

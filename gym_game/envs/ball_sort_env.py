@@ -1,15 +1,20 @@
 
 import gym
 
-from math import perm, factorial
+from math import perm, comb, factorial
 from copy import deepcopy
 from gym_game.envs.ball_sort_puzzle import BallSortPuzzle
 
 class BallSortEnv(gym.Env):
-    def __init__(self, board, bottle_size, num_bottles):
+    def __init__(self, board, bottle_size, num_bottles, empty_spaces, num_balls, ball_per_color, num_colors):
         self.orig_board = board
         self.bottle_size = bottle_size
         self.num_bottles = num_bottles
+
+        self.empty_spaces = empty_spaces
+        self.num_balls = num_balls
+        self.ball_per_color = ball_per_color
+        self.num_colors = num_colors
 
         # Action Space
         # (Z) ->
@@ -20,15 +25,11 @@ class BallSortEnv(gym.Env):
 
         # Observation Space
         # Number of States
-        # TODO: Find a way to get the exact number os states
-        value = 1
-        k = self.bottle_size
-        for i in range(self.bottle_size-1):
-            n = (self.num_bottles*self.bottle_size - self.bottle_size * i)
-            value *= factorial(n) / (factorial(k) * factorial(n - k))
+        empty_spaces = comb(self.empty_spaces + self.num_bottles - 1, self.empty_spaces)
+        ball_permutations = factorial(self.num_balls) / (pow(factorial(self.ball_per_color), self.num_colors))
+        value = int(empty_spaces * ball_permutations)
         
-        print(value)
-        self.observation_space = gym.spaces.Discrete(30000000)
+        self.observation_space = gym.spaces.Discrete(value)
 
         # Init Game
         self.reset()
