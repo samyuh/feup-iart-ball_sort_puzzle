@@ -5,6 +5,7 @@ from gym.envs.registration import register
 
 from algorithms.q_learning import QLearning
 from algorithms.sarsa import Sarsa
+from algorithms.ppo import run
 
 def parseJson(path):
     with open(path) as json_file:
@@ -55,6 +56,8 @@ if __name__ == "__main__":
         QLearning(env, data['param'], render=False, log=True).run()
     elif algorithm == 'sarsa':
         Sarsa(env, data['param'], render=True, log=True).run()
+    elif algorithm == 'ppo':
+        run()
     else:
         print("Valid algorithms:")
         print("     - qlearning")

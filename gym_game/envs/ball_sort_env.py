@@ -29,7 +29,7 @@ class BallSortEnv(gym.Env):
         ball_permutations = factorial(self.num_balls) / (pow(factorial(self.ball_per_color), self.num_colors))
         value = int(empty_spaces * ball_permutations)
         
-        self.observation_space = gym.spaces.Discrete(9999999)
+        self.observation_space = gym.spaces.Discrete(value)
 
         # Init Game
         self.reset()
@@ -45,7 +45,7 @@ class BallSortEnv(gym.Env):
         
         self.iteration += 1
         
-        return state, reward, done or stuck, self.game.board
+        return state, reward, done or stuck, {}
     
     def render(self, mode="human", close=False):
         print("Bottles - Move {}".format(self.iteration))

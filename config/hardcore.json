@@ -7,13 +7,13 @@
     "ball_per_color" : 4,
     "num_colors" : 3,
     "param" : {
-        "num_episodes" : 100000000,
-        "max_steps_per_episode" : 300,
+        "num_episodes" : 40000,
+        "max_steps_per_episode" : 100,
         "learning_rate" : 0.1,
         "discount_rate" : 0.95,
         "exploration_rate" : 1,    
         "max_exploration_rate" : 1,
-        "min_exploration_rate" : 0.001,
+        "min_exploration_rate" : 0.01,
         "exploration_decay_rate" : 0.001
     }
 }

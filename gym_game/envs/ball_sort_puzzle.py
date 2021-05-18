@@ -30,13 +30,13 @@ class BallSortPuzzle:
 
         # Invalid Move
         if first == -1 or second == -1:
-            return -1
+            return -5
 
         # Get Color to Swap
         color = self.board[action[0]][first]
         # Invalid Move: a ball must be placed on top of a ball of the same color or on an empty tube
         if not self.checkColor(color, self.board[action[1]], second-1):
-            return -1
+            return -5
 
         # Do the action
         self.board[action[0]][first] = 0
