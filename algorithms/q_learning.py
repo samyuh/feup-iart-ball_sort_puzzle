@@ -62,7 +62,8 @@ class QLearning(Algorithm):
                 
                 # If done : finish episode
                 if done == True: 
-                    print("Found Solution - {} - {}".format(episode, step))
+                    print("Found Solution - {}".format(step))
+                    self.env.render()
                     break
                     
             # Exploration rate decay
@@ -73,7 +74,7 @@ class QLearning(Algorithm):
             self.rewards_all_episodes.append(rewards_current_episode)
             end_time = time.time()
             elapsed = end_time - start_time
-            self.env.render()
+            #self.env.render()
             self.logger.writeLog(episode, rewards_current_episode)
             
         # Calculate and print the average reward per 10 episodes
