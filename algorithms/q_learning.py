@@ -29,8 +29,7 @@ class QLearning(Algorithm):
     def run(self):
         # Q-Learning algorithm
         for episode in range(self.num_episodes):
-            if episode % 1000 == 0:
-                print("*** EPISODE {} ***".format(episode))
+            print("*** EPISODE {} ***".format(episode))
 
             # Reset the environment
             state = self.env.reset()
@@ -40,7 +39,7 @@ class QLearning(Algorithm):
             start_time = time.time()
             for step in range(self.max_steps_per_episode):
                 # Visualizing the training
-                if self.render: self.env.render()
+                #if self.render: self.env.render()
 
                 exploration_rate_threshold = random.uniform(0,1)
                 if exploration_rate_threshold > self.exploration_rate: 
@@ -74,6 +73,7 @@ class QLearning(Algorithm):
             self.rewards_all_episodes.append(rewards_current_episode)
             end_time = time.time()
             elapsed = end_time - start_time
+            self.env.render()
             self.logger.writeLog(episode, rewards_current_episode)
             
         # Calculate and print the average reward per 10 episodes

@@ -29,7 +29,7 @@ class BallSortEnv(gym.Env):
         ball_permutations = factorial(self.num_balls) / (pow(factorial(self.ball_per_color), self.num_colors))
         value = int(empty_spaces * ball_permutations)
         
-        self.observation_space = gym.spaces.Discrete(value)
+        self.observation_space = gym.spaces.Discrete(9999999)
 
         # Init Game
         self.reset()
@@ -40,8 +40,8 @@ class BallSortEnv(gym.Env):
         stuck = self.game.isStuck()
         state = self.game.getState()
 
-        if done: reward = 10
-        elif stuck: reward = -10
+        if done: reward = self.num_balls * 2
+        elif stuck: reward = - (self.num_balls * 2)
         
         self.iteration += 1
         
