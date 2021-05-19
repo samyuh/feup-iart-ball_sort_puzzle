@@ -9,11 +9,11 @@
     "param" : {
         "num_episodes" : 10000,
         "max_steps_per_episode" : 30,
-        "learning_rate" : 0.1,
+        "learning_rate" : 0.3,
         "discount_rate" : 0.95,
         "exploration_rate" : 1,    
         "max_exploration_rate" : 1,
         "min_exploration_rate" : 0.001,
-        "exploration_decay_rate" : 0.001
+        "exploration_decay_rate" : 0.01
     }
 }

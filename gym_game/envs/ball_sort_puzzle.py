@@ -29,14 +29,14 @@ class BallSortPuzzle:
         first, second = self.pickPiece(self.board[action[0]]), self.getFirstEmpty(self.board[action[1]])
 
         # Invalid Move
-        if first == -1 or second == -1:
-             return exit(-1)
+        # if first == -1 or second == -1:
+        #      return exit(-1)
 
         # Get Color to Swap
         color = self.board[action[0]][first]
         # Invalid Move: a ball must be placed on top of a ball of the same color or on an empty tube
-        if not self.checkColor(color, self.board[action[1]], second-1):
-             return exit(-1)
+        # if not self.checkColor(color, self.board[action[1]], second-1):
+        #      return exit(-1)
 
         # Do the action
         self.board[action[0]][first] = 0
