@@ -40,7 +40,7 @@ class QLearning(Algorithm):
             for step in range(self.max_steps_per_episode):
                 # Visualizing the training
                 #if self.render: self.env.render()
-
+                self.env.render()
                 exploration_rate_threshold = random.uniform(0,1)
                 if exploration_rate_threshold > self.exploration_rate: 
                     action = np.argmax(self.q_table[state,:])
