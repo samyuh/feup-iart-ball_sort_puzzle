@@ -1,6 +1,7 @@
 import numpy as np
 import gym
 
+from utils.logger import Logger
 from algorithms.algorithm import Algorithm
 
 class Sarsa(Algorithm):
@@ -12,6 +13,8 @@ class Sarsa(Algorithm):
 
         # Initializing the Q-matrix
         self.q_table = np.zeros((self.state_space_size, self.action_space_size))
+
+        if log: self.logger = Logger("QLearning")
 
         # List of rewards
         self.rewards_all_episodes = []
@@ -68,6 +71,7 @@ class Sarsa(Algorithm):
         print("*** Average  reward per thousand episodes ***\n")
 
         for r in rewards_per_thousand_episodes:
+            self.logger.writeAvgRewards(count, r)
             print(count, ": ", str(sum(r / 100)))
             count += 100
 
