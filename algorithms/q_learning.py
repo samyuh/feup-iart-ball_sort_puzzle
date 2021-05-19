@@ -39,13 +39,29 @@ class QLearning(Algorithm):
             start_time = time.time()
             for step in range(self.max_steps_per_episode):
                 # Visualizing the training
-                #if self.render: self.env.render()
+                #self.env.render()
+                validMoves = self.env.game.getValid()
 
                 exploration_rate_threshold = random.uniform(0,1)
-                if exploration_rate_threshold > self.exploration_rate: 
+                if exploration_rate_threshold > self.exploration_rate:
+                    qtableT = self.q_table[state,:]
+                    #print(qtableT)
                     action = np.argmax(self.q_table[state,:])
+ 
+                    already = False
+                    arr = qtableT.argsort()[::-1]
+                    #print(arr)
+                    for i in arr:
+                        #print(qtableT[i])
+                        if i in validMoves and not already:
+                            action = i
+                            already = True
+                    
+                    #print(action)
                 else:
                     action = self.env.action_space.sample()
+                    while action not in validMoves:
+                        action = self.env.action_space.sample()
                 
                 # Take the action and observe the outcome state and reward
                 new_state, reward, done, info = self.env.step(action)

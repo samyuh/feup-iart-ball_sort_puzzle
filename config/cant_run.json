@@ -7,8 +7,8 @@
     "ball_per_color" : 4,
     "num_colors" : 7,
     "param" : {
-        "num_episodes" : 10000000,
-        "max_steps_per_episode" : 2900,
+        "num_episodes" : 10000,
+        "max_steps_per_episode" : 50,
         "learning_rate" : 0.1,
         "discount_rate" : 0.95,
         "exploration_rate" : 1,    

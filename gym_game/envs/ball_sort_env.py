@@ -40,7 +40,7 @@ class BallSortEnv(gym.Env):
         stuck = self.game.isStuck()
         state = self.game.getState()
 
-        if done: reward = 10
+        if done: reward = 100
         elif stuck: reward = -10
         
         self.iteration += 1

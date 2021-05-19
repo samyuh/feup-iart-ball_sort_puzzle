@@ -30,19 +30,32 @@ class BallSortPuzzle:
 
         # Invalid Move
         if first == -1 or second == -1:
-            return -5
+             return exit(-1)
 
         # Get Color to Swap
         color = self.board[action[0]][first]
         # Invalid Move: a ball must be placed on top of a ball of the same color or on an empty tube
         if not self.checkColor(color, self.board[action[1]], second-1):
-            return -5
+             return exit(-1)
 
         # Do the action
         self.board[action[0]][first] = 0
         self.board[action[1]][second] = color
 
-        return -1
+        return self.calculateReward()
+
+    def calculateReward(self):
+        value = 0
+        for tubeIdx, tube in enumerate(self.board):
+            prevBall = -1
+            for idx, ball in enumerate(tube):
+                if prevBall != -1 and prevBall != ball and ball != 0:
+                    for i in range(idx, len(tube)):
+                        if tube[i] != 0:
+                            value -= 1
+                    break
+                prevBall = ball
+        return value
 
     def checkColor(self, color, bottle, index):
         if index == -1:
@@ -87,3 +100,28 @@ class BallSortPuzzle:
                 continue
             return False
         return isStuck
+
+    def getValid(self):
+        numActions = perm(self.num_bottles, 2)
+        validActions = []
+
+        for num in range(numActions):
+            action = self.actions[num]
+            # Get pieces to toggle
+            first, second = self.pickPiece(self.board[action[0]]), self.getFirstEmpty(self.board[action[1]])
+
+            # Invalid Move
+            if first == -1 or second == -1:
+                continue
+
+            # Get Color to Swap
+            color = self.board[action[0]][first]
+            # Invalid Move: a ball must be placed on top of a ball of the same color or on an empty tube
+            if not self.checkColor(color, self.board[action[1]], second-1):
+                continue
+
+            validActions.append(num)
+
+        return validActions
+
+        

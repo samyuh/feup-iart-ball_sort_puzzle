@@ -81,11 +81,23 @@ class Sarsa(Algorithm):
 
     # Function to choose the next action
     def choose_action(self, state):
+        validMoves = self.env.game.getValid()
         action = 0
         if np.random.uniform(0, 1) < self.exploration_rate:
             action = self.env.action_space.sample()
+            while action not in validMoves:
+                action = self.env.action_space.sample()
         else:
-            action = np.argmax(self.q_table[state, :])
+            qtableT = self.q_table[state,:]
+            #print(qtableT)
+            action = np.argmax(self.q_table[state,:])
+
+            already = False
+            arr = qtableT.argsort()[::-1]
+            for i in arr:
+                if i in validMoves and not already:
+                    action = i
+                    already = True
 
         return action
   
