@@ -1,5 +1,6 @@
 
 import gym
+import numpy as np
 
 from math import perm, comb, factorial
 from copy import deepcopy
@@ -26,14 +27,33 @@ class BallSortEnv(gym.Env):
         # Observation Space
         # Number of States
         empty_spaces = comb(self.empty_spaces + self.num_bottles - 1, self.empty_spaces)
+
         ball_permutations = factorial(self.num_balls) / (pow(factorial(self.ball_per_color), self.num_colors))
         value = int(empty_spaces * ball_permutations)
         
+
         self.observation_space = gym.spaces.Discrete(99999)
 
         # Init Game
         self.reset()
- 
+    
+    def argMax(self, validMoves, q_table_line):
+        action = np.argmax(q_table_line)
+
+        stateValues = q_table_line.argsort()[::-1]
+        for i in stateValues:
+            if i in validMoves:
+                return i
+
+        return action    
+
+    def validSample(self, validMoves):
+        action = self.action_space.sample()
+        if action not in validMoves:
+            return np.random.choice(validMoves)
+        
+        return action
+
     def step(self, action):
         self.iteration += 1
 
@@ -42,7 +62,7 @@ class BallSortEnv(gym.Env):
         stuck = self.game.isStuck()
         state = self.game.getState()
 
-        if done: reward = 1
+        if done: reward = self.num_balls
         
         return state, reward, done or stuck, {}
     

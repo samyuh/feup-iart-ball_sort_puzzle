@@ -44,17 +44,9 @@ class QLearning(Algorithm):
                 exploration_rate_threshold = random.uniform(0, 1)
 
                 if exploration_rate_threshold > self.exploration_rate:
-                    action = np.argmax(self.q_table[state,:])
-
-                    stateValues = self.q_table[state,:].argsort()[::-1]
-                    for i in stateValues:
-                        if i in validMoves:
-                            action = i
-                            break
+                    action = self.env.argMax(validMoves, self.q_table[state,:])
                 else:
-                    action = self.env.action_space.sample()
-                    while action not in validMoves:
-                        action = self.env.action_space.sample()
+                    action = self.env.validSample(validMoves)
                 
                 # Take the action and observe the outcome state and reward
                 new_state, reward, done, info = self.env.step(action)
