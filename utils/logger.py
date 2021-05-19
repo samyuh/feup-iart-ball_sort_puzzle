@@ -23,6 +23,23 @@ class Logger:
         self.avg.write(str(count) + "," + str(sum(r / 100)) + "\n")
     
     @staticmethod
+    def printAvgRewards(count, r):
+        print(count, ": ", str(sum(r / 100)))
+
+    @staticmethod
+    def newEpisode(episode):
+        print("*** EPISODE {} ***".format(episode))
+
+    @staticmethod
+    def finishStep(step):
+        print("Found Solution - Step: {}".format(step))
+
+    @staticmethod
+    def finish(rewards_all_episodes, num_episodes, exploration_rate):
+        print("Performace: " +  str(sum(rewards_all_episodes)/num_episodes))
+        print("Exploration Rate: ", exploration_rate)
+
+    @staticmethod
     def errorArgs():
         print("Bad arguments\nUsage:")
         print(" main.py [ALGORITHM] [CONFIG] {<-log> <-render> <-default>}\n\n")

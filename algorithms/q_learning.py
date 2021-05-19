@@ -3,18 +3,19 @@ import random
 import numpy as np
 import csv
 
-import time
-
 from utils.logger import Logger
 from algorithms.algorithm import Algorithm
     
 class QLearning(Algorithm):
-    def __init__(self, env, data, render, log):
+    def __init__(self, env, data, render, verbose, log):
         super().__init__(env, data)
         
-        # Render and Log
+        # Render, Log, Verbose
         self.render = render
-        if log: self.logger = Logger("QLearning")
+        self.verbose = verbose
+        self.log = log
+
+        self.logger = Logger("QLearning")
 
         # Set the action and state spaces
         action_space_size = self.env.action_space.n
@@ -29,35 +30,28 @@ class QLearning(Algorithm):
     def run(self):
         # Q-Learning algorithm
         for episode in range(self.num_episodes):
-            print("*** EPISODE {} ***".format(episode))
+            if self.verbose: Logger.newEpisode(episode)
 
             # Reset the environment
-            state = self.env.reset()
             done = False
+            state = self.env.reset()
             rewards_current_episode = 0
             
-            start_time = time.time()
             for step in range(self.max_steps_per_episode):
-                # Visualizing the training
-                #self.env.render()
-                validMoves = self.env.game.getValid()
+                if self.render: self.env.render()
 
-                exploration_rate_threshold = random.uniform(0,1)
+                # Get a move
+                validMoves = self.env.game.getValid()
+                exploration_rate_threshold = random.uniform(0, 1)
+
                 if exploration_rate_threshold > self.exploration_rate:
-                    qtableT = self.q_table[state,:]
-                    #print(qtableT)
                     action = np.argmax(self.q_table[state,:])
- 
-                    already = False
-                    arr = qtableT.argsort()[::-1]
-                    #print(arr)
-                    for i in arr:
-                        #print(qtableT[i])
-                        if i in validMoves and not already:
+
+                    stateValues = self.q_table[state,:].argsort()[::-1]
+                    for i in stateValues:
+                        if i in validMoves:
                             action = i
-                            already = True
-                    
-                    #print(action)
+                            break
                 else:
                     action = self.env.action_space.sample()
                     while action not in validMoves:
@@ -67,19 +61,17 @@ class QLearning(Algorithm):
                 new_state, reward, done, info = self.env.step(action)
 
                 # Update Q-table for Q(s,a)
-                # Q(s,a):= Q(s,a) + lr [R(s,a) + gamma * max Q(s',a') - Q(s,a)]
-                # qtable[new_state,:] : all the actions we can take from new state
                 self.q_table[state, action] = self.q_table[state, action] + \
-                    self.learning_rate * (reward + self.discount_rate * np.max(self.q_table[new_state, :]) - self.q_table[state, action])
+                    self.learning_rate * (reward + self.discount_rate * np.max(self.q_table[new_state, :]) - \
+                    self.q_table[state, action])
                 
-                # Our new state is state
                 state = new_state
                 rewards_current_episode += reward
                 
-                # If done : finish episode
-                if done == True: 
-                    print("Found Solution - {}".format(step))
-                    self.env.render()
+                if done: 
+                    if self.verbose: 
+                        Logger.finishStep(step)
+                        self.env.render()
                     break
                     
             # Exploration rate decay
@@ -88,22 +80,21 @@ class QLearning(Algorithm):
                 (self.max_exploration_rate - self.min_exploration_rate) * np.exp(-self.exploration_decay_rate * episode)
             
             self.rewards_all_episodes.append(rewards_current_episode)
-            end_time = time.time()
-            elapsed = end_time - start_time
-            #self.env.render()
-            self.logger.writeLog(episode, rewards_current_episode)
+            
+            if self.render: self.env.render()
+            if self.log: self.logger.writeLog(episode, rewards_current_episode)
             
         # Calculate and print the average reward per 10 episodes
         rewards_per_thousand_episodes = np.split(np.array(self.rewards_all_episodes), self.num_episodes / 100)
-        count = 100
 
+        count = 100
         for r in rewards_per_thousand_episodes:
-            self.logger.writeAvgRewards(count, r)
+            if self.log: self.logger.writeAvgRewards(count, r)
+            if self.verbose: Logger.printAvgRewards(count, r)
             count += 100
             
         # Print updated Q-table
         # Save Q-Table
         # np.savetxt('2darray.csv', self.q_table, delimiter=',', fmt='%d')
 
-        print("Performace: " +  str(sum(self.rewards_all_episodes)/self.num_episodes))
-        print("Exploration Rate: ", self.exploration_rate)
+        if self.verbose: Logger.finish(self.rewards_all_episodes, self.num_episodes, self.exploration_rate)

@@ -7,8 +7,7 @@ class Plot:
     def __init__(self, filePath):
         self.filepath = 'teste.csv'
     
-    def plot():
-        
+    def plot(self):
         data = pd.read_csv(self.filepath)
         rows = []
 

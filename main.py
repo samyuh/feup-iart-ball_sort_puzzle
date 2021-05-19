@@ -28,14 +28,18 @@ class App:
         if '-verbose' in args: self.verbose = True
         if '-log' in args: self.log = True
         if '-plot' in args: self.plot = True
-
+        
         try:
-            self.data = parseJson(self.configFilePath)
+            self.data = self.parseJson(self.configFilePath)
         except FileNotFoundError:
             Logger.fileNotFound("Config")
             exit(-1)
 
         self.run()
+
+    def parseJson(self, path):
+        with open(path) as json_file:
+            return json.load(json_file)
 
     def run(self):
         # TODO: check if data is right
@@ -57,11 +61,12 @@ class App:
 
         # Choose Algorithm
         if self.algorithm == 'qlearning':
-            QLearning(env, self.data['param'], self.render, self.log).run()
+            QLearning(env, self.data['param'], self.render, self.verbose, self.log).run()
         elif self.algorithm == 'sarsa':
-            Sarsa(env, self.data['param'], self.render, self.log).run()
+            Sarsa(env, self.data['param'], self.render, self.verbose, self.log).run()
         elif self.algorithm == 'ppo':
             #run()
+            pass
         else:
             print("Valid algorithms:")
             print("     - qlearning")
@@ -72,10 +77,6 @@ class App:
             a = Plot('filePath')
             a.plot()
 
-def parseJson(path):
-    with open(path) as json_file:
-        return json.load(json_file)
-        
 if __name__ == "__main__":
     app = App(sys.argv)
 
