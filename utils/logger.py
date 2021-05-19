@@ -1,7 +1,6 @@
 import os
 
 from datetime import datetime
-import matplotlib.pyplot as plt
 
 class Logger:
     def __init__(self, algorithm):
@@ -13,9 +12,17 @@ class Logger:
             pass
         
         time = datetime.now().strftime("%H_%M_%S")
-        self.log = open('all.csv', "w")
-        self.avg = open('teste.csv', "w")
-     
+        self._logAllFile = self._dir + algorithm + '-' +time + '-all.csv'
+        self._logAvgFile = self._dir + algorithm + '-' +time + '-avg.csv'
+        self.log = open(self._logAllFile, "w")
+        self.avg = open(self._logAvgFile, "w")
+    
+    def closeLogs(self):
+        self.log.close()
+        self.avg.close()
+
+        return self._logAllFile, self._logAvgFile
+
     def writeLog(self, episode, rewards):
         self.log.write(str(episode) + "," + str(rewards) + "\n")
 
@@ -54,9 +61,7 @@ class Logger:
         print("     -render")
 
     @staticmethod
-    def fileNotFound(file):
-        print("-> {} file not found. More information on README".format(file))
-
-
+    def error(message):
+        print("[ERROR] {}".format(message))
 
 

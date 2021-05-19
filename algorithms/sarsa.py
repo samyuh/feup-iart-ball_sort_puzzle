@@ -1,16 +1,12 @@
-import numpy as np
 import gym
+import numpy as np
 
-from utils.logger import Logger
-from algorithms.algorithm import Algorithm
+from algorithms import Algorithm
+from utils import Logger
 
 class Sarsa(Algorithm):
     def __init__(self, env, data, render, verbose, log):
-        super().__init__(env, data)
-        # Render, Log, Verbose
-        self.render = render
-        self.verbose = verbose
-        self.log = log
+        super().__init__(env, data, render, verbose, log)
 
         self.logger = Logger("Sarsa")
 
@@ -23,6 +19,11 @@ class Sarsa(Algorithm):
 
         # List of rewards
         self.rewards_all_episodes = []
+
+    def finishLog(self):
+        if self.log:
+            return self.logger.closeLogs()
+        return None, None
 
     def run(self):
         # Starting the SARSA learning

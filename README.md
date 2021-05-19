@@ -1,19 +1,51 @@
-# Reinforcement Learning - Ball Sort Puzzle
 
-PYTHON VERSION -> 3.8.9
-pip install gym
-pip install tensorflow
+# Artificial Intelligence - Reinforcement Learning with Ball Sort Puzzle
+![University](https://img.shields.io/badge/FEUP-MIEIC-red)
 
-### Run
+- **Institution**: [FEUP](https://sigarra.up.pt/feup/en/web_page.Inicial)
+- **Course**: [MIEIC](https://sigarra.up.pt/feup/en/cur_geral.cur_view?pv_curso_id=742&pv_ano_lectivo=2020)
+- **Curricular Unit**: [Subject](https://sigarra.up.pt/feup/en/ucurr_geral.ficha_uc_view?pv_ocorrencia_id=459487)
 
-Usage:
+### Group Members
+- Diana Freitas, up201806230
+- Diogo Samuel Fernandes, up201806250
+- Hugo Guimarães, up201806490
+
+### Description
+
+Ball Sort Puzzle is a color sorting game, in which the balls must be sorted in
+the tubes until all the balls of the same color are stacked together in the
+same tube.
+A ball can only be placed on top of another ball if both of them have the
+same color and if the tube has enough space.
+
+---
+
+### Setup
+
+We used python version 3.8.9.
+
+Dependecies:
 ```
- python main.py [CONFIG] [ALGORITHM]
-
- python3 main.py [CONFIG] [ALGORITHM]
+    pip install gym
+    pip install tensorflow
 ```
 
+To run our program, run in the terminal:
+```
+ python main.py [ALGORITHM] [CONFIG] [-verbose -log -plot]
+
+ python3 main.py [ALGORITHM] [CONFIG] [-verbose -log -plot]
+```
+
+
+##### Algorithms
+qlearning
+sarsa
+
+##### Configuration Files
 Create a configuration file under the ./config directory (or use one of). The config files have the following layout:
+You can also use one of your config file, by passing "default.json" without quotes
 
 ```json
 {
@@ -33,6 +65,27 @@ Create a configuration file under the ./config directory (or use one of). The co
 }
 ```
 
-After that, choose one of the implemented algorithms:
-- Q-Learning, by passing "qlearning" as argument
-- Sarsa, by passing "sarsa" as argument
+##### Options
+- -log
+- -verbose
+- -render
+- -plot
+
+We recommend using the options: '-log -verbose -plot'
+
+**Note 1**: If you don't choose anything on options, nothing will be printed or appear on your screen.
+**Note 2**: If you want to see the reward plot, using -plot, you should have -log too.
+
+---
+
+#### Example 
+
+Use QLearning with the definitions of first_level.json with log, plot and verbose
+```
+python main.py qlearning first_level.json -verbose -log -plot
+```
+
+Use Sarsa with the definitions of first_level.json with log, plot, verbose and render
+```
+python main.py sarsa first_level.json -verbose -render -log -plot
+```

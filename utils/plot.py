@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 class Plot:
     def __init__(self, filePath):
-        self.filepath = 'teste.csv'
+        self.filepath = filePath
     
     def plot(self):
         data = pd.read_csv(self.filepath)

@@ -1,20 +1,14 @@
 import gym
-import random
 import numpy as np
-import csv
+import random
 
-from utils.logger import Logger
-from algorithms.algorithm import Algorithm
+from algorithms import Algorithm
+from utils import Logger
     
 class QLearning(Algorithm):
     def __init__(self, env, data, render, verbose, log):
-        super().__init__(env, data)
+        super().__init__(env, data, render, verbose, log)
         
-        # Render, Log, Verbose
-        self.render = render
-        self.verbose = verbose
-        self.log = log
-
         self.logger = Logger("QLearning")
 
         # Set the action and state spaces
@@ -26,6 +20,11 @@ class QLearning(Algorithm):
 
         # List of rewards
         self.rewards_all_episodes = []
+
+    def finishLog(self):
+        if self.log:
+            return self.logger.closeLogs()
+        return None, None
 
     def run(self):
         # Q-Learning algorithm
@@ -92,9 +91,5 @@ class QLearning(Algorithm):
             if self.log: self.logger.writeAvgRewards(count, r)
             if self.verbose: Logger.printAvgRewards(count, r)
             count += 100
-            
-        # Print updated Q-table
-        # Save Q-Table
-        # np.savetxt('2darray.csv', self.q_table, delimiter=',', fmt='%d')
 
         if self.verbose: Logger.finish(self.rewards_all_episodes, self.num_episodes, self.exploration_rate)

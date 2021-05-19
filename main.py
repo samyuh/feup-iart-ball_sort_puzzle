@@ -1,21 +1,17 @@
 import sys
+
 import json
 import gym
-
 from gym.envs.registration import register
 
-from algorithms.q_learning import QLearning
-from algorithms.sarsa import Sarsa
-#from algorithms.ppo import run
-
-from utils.plot import Plot
-from utils.logger import Logger
+from algorithms import QLearning, Sarsa
+from utils import Plot, Logger
 
 class App:
     def __init__(self, args):
         if len(args) < 3:
             Logger.errorArgs()
-            exit(-1)
+            return -1
         
         self.algorithm = args[1]
         self.configFilePath = './config/{}'.format(args[2])
@@ -28,12 +24,12 @@ class App:
         if '-verbose' in args: self.verbose = True
         if '-log' in args: self.log = True
         if '-plot' in args: self.plot = True
-        
+
         try:
             self.data = self.parseJson(self.configFilePath)
         except FileNotFoundError:
-            Logger.fileNotFound("Config")
-            exit(-1)
+            Logger.error("Config file not found. More information on README.")
+            return -1
 
         self.run()
 
@@ -42,8 +38,6 @@ class App:
             return json.load(json_file)
 
     def run(self):
-        # TODO: check if data is right
-
         # Build Environment
         register(id='ball_sort-v1',
                 entry_point='gym_game.envs:BallSortEnv',
@@ -61,21 +55,27 @@ class App:
 
         # Choose Algorithm
         if self.algorithm == 'qlearning':
-            QLearning(env, self.data['param'], self.render, self.verbose, self.log).run()
-        elif self.algorithm == 'sarsa':
-            Sarsa(env, self.data['param'], self.render, self.verbose, self.log).run()
-        elif self.algorithm == 'ppo':
-            #run()
-            pass
-        else:
-            print("Valid algorithms:")
-            print("     - qlearning")
-            print("     - sarsa\n")
-            exit(-1)
+            qLearning = QLearning(env, self.data['param'], self.render, self.verbose, self.log)
+            qLearning.run()
 
-        if self.plot:
-            a = Plot('filePath')
-            a.plot()
+            _, avgValues = qLearning.finishLog()
+        elif self.algorithm == 'sarsa':
+            sarsa = Sarsa(env, self.data['param'], self.render, self.verbose, self.log)
+            sarsa.run()
+
+            _, avgValues = sarsa.finishLog()
+        else:
+            Logger.error("Not a valid algorithm.")
+            return -1
+
+        if self.plot and self.log:
+            graphic = Plot(avgValues)
+            graphic.plot()
+        elif self.plot:
+            Logger.error("Log should be enabled.")
+            return -1
+        
+        return 0
 
 if __name__ == "__main__":
     app = App(sys.argv)
