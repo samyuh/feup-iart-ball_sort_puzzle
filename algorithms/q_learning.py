@@ -9,7 +9,7 @@ from utils.logger import Logger
 from algorithms.algorithm import Algorithm
     
 class QLearning(Algorithm):
-    def __init__(self, env, data, render=True, log=True):
+    def __init__(self, env, data, render, log):
         super().__init__(env, data)
         
         # Render and Log

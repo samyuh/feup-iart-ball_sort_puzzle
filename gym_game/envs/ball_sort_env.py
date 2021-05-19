@@ -35,15 +35,14 @@ class BallSortEnv(gym.Env):
         self.reset()
  
     def step(self, action):
+        self.iteration += 1
+
         reward = self.game.applyMovement(action)
         done = self.game.isGoal()
         stuck = self.game.isStuck()
         state = self.game.getState()
 
-        if done: reward = 100
-        elif stuck: reward -= 10
-        
-        self.iteration += 1
+        if done: reward = 1
         
         return state, reward, done or stuck, {}
     
@@ -55,7 +54,6 @@ class BallSortEnv(gym.Env):
             print("\n", end="")
 
     def reset(self):
-        # TODO: check if orig board is the same at start of each episode
         board_copy = deepcopy(self.orig_board)
         self.game = BallSortPuzzle(board_copy, self.bottle_size, self.num_bottles)
 

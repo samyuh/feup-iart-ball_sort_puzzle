@@ -21,6 +21,25 @@ class Logger:
 
     def writeAvgRewards(self, count, r):
         self.avg.write(str(count) + "," + str(sum(r / 100)) + "\n")
+    
+    @staticmethod
+    def errorArgs():
+        print("Bad arguments\nUsage:")
+        print(" main.py [ALGORITHM] [CONFIG] {<-log> <-render> <-default>}\n\n")
+        print("Configuration Files:")
+        print("     - More information on README. You can also use one of your config file, by passing \"default.json\" without quotes\n")
+        print("Algorithms:")
+        print("     - qlearning")
+        print("     - sarsa\n")
+        print("OPTIONS:")
+        print("     -log")
+        print("     -render")
+        print("     -render")
+
+    @staticmethod
+    def fileNotFound(file):
+        print("-> {} file not found. More information on README".format(file))
+
 
 
 
