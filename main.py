@@ -4,7 +4,7 @@ import json
 import gym
 from gym.envs.registration import register
 
-from algorithms import QLearning, Sarsa
+from algorithms import QLearning, Sarsa, DoubleQLearning
 #from algorithms.ppo import run
 from utils import Plot, Logger, GameSettings
 
@@ -69,7 +69,10 @@ class App:
 
             _, avgValues = sarsa.finishLog()
         elif self.algorithm == 'dqlearning':
-            pass
+            dqLearning = DoubleQLearning(env, self.data['param'], self.render, self.verbose, self.log)
+            dqLearning.run()
+
+            _, avgValues = dqLearning.finishLog()
         else:
             Logger.error("Not a valid algorithm.")
             return -1

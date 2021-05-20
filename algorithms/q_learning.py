@@ -15,7 +15,7 @@ class QLearning(Algorithm):
         action_space_size = self.env.action_space.n
         state_space_size = self.env.observation_space.n
 
-        # Create Q-table
+        # Initializing the Q-matrix
         self.q_table = np.zeros((state_space_size, action_space_size))
 
         # List of rewards

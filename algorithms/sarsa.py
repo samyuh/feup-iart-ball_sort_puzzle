@@ -11,11 +11,11 @@ class Sarsa(Algorithm):
         self.logger = Logger("Sarsa")
 
         # Set the action and state spaces
-        self.action_space_size = self.env.action_space.n
-        self.state_space_size = self.env.observation_space.n
+        action_space_size = self.env.action_space.n
+        state_space_size = self.env.observation_space.n
 
         # Initializing the Q-matrix
-        self.q_table = np.zeros((self.state_space_size, self.action_space_size))
+        self.q_table = np.zeros((state_space_size, action_space_size))
 
         # List of rewards
         self.rewards_all_episodes = []
@@ -32,6 +32,7 @@ class Sarsa(Algorithm):
 
             # Reset the envirnoment , start the episode and get the initial observation
             state1 = self.env.reset()
+            
             # Get the first action
             action1 = self.choose_action(state1)
 
