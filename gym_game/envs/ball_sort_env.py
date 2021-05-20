@@ -7,6 +7,8 @@ from copy import deepcopy
 from gym_game.envs.ball_sort_puzzle import BallSortPuzzle
 
 class BallSortEnv(gym.Env):
+    metadata = {'render.modes': ['human']}
+
     def __init__(self, board, bottle_size, num_bottles, empty_spaces, num_balls, ball_per_color, num_colors):
         self.orig_board = board
         self.bottle_size = bottle_size
@@ -32,11 +34,11 @@ class BallSortEnv(gym.Env):
         value = int(empty_spaces * ball_permutations)
         
 
-        self.observation_space = gym.spaces.Discrete(99999)
+        self.observation_space = gym.spaces.Discrete(200)
 
         # Init Game
         self.reset()
-    
+
     def argMax(self, validMoves, q_table_line):
         action = np.argmax(q_table_line)
 
@@ -54,6 +56,7 @@ class BallSortEnv(gym.Env):
         
         return action
 
+
     def step(self, action):
         self.iteration += 1
 
@@ -64,7 +67,7 @@ class BallSortEnv(gym.Env):
 
         if done: reward = self.num_balls
         
-        return state, reward, done or stuck, {}
+        return state, reward, done or stuck, {"state" : self.game.board}
     
     def render(self, mode="human", close=False):
         print("Bottles - Move {}".format(self.iteration))
