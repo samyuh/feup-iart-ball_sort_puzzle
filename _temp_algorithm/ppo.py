@@ -33,7 +33,7 @@ def run():
     # which does exactly the previous steps for you:
     # env = make_vec_env(env_id, n_envs=num_cpu, seed=0)
     model = PPO('MlpPolicy', env, verbose=1)
-    model.learn(total_timesteps=1000000)
+    model.learn(total_timesteps=10000)
 
     obs = env.reset()
     for i in range(50):

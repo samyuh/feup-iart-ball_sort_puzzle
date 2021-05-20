@@ -60,14 +60,19 @@ class BallSortEnv(gym.Env):
     def step(self, action):
         self.iteration += 1
 
+        
         reward = self.game.applyMovement(action)
         done = self.game.isGoal()
         stuck = self.game.isStuck()
         state = self.game.getState()
 
         if done: reward = self.num_balls
-        
-        return state, reward, done or stuck, {"state" : self.game.board}
+
+        over = False
+        if self.iteration > 35:
+            over = True
+
+        return state, reward, done or stuck or over, {"state" : self.game.board}
     
     def render(self, mode="human", close=False):
         print("Bottles - Move {}".format(self.iteration))

@@ -25,16 +25,20 @@ def make_env(env_id, rank, seed=0):
     return _init
 
 if __name__ == "__main__":
-    env_id = 'gym_game:ball_sort-v0'
+    env_id = 'gym_game:ball_sort-v2'
     num_cpu = 8  # Number of processes to use
     # Create the vectorized environment
-    env = SubprocVecEnv([make_env(env_id, i) for i in range(num_cpu)])
+    #env = SubprocVecEnv([make_env(env_id, i) for i in range(num_cpu)])
 
     # Stable Baselines provides you with make_vec_env() helper
     # which does exactly the previous steps for you:
-    # env = make_vec_env(env_id, n_envs=num_cpu, seed=0)
-    model = PPO('MlpPolicy', env, verbose=1)
-    model.learn(total_timesteps=10000)
+    env = make_vec_env(env_id, n_envs=num_cpu, seed=0)
+    model = PPO('MlpPolicy', env,
+             #learning_rate=0.01,
+             #ent_coef = 0.01,
+             #n_steps = 15, #steps per episode
+             verbose=1)
+    model.learn(total_timesteps=500000)
 
     obs = env.reset()
     for i in range(50):
@@ -42,10 +46,11 @@ if __name__ == "__main__":
         obs, rewards, dones, info = env.step(action)
 
         print(dones)
-        for i in info:
-            print(i)
+        for board_state in info:
+            print(board_state)
         
         if True in dones:
             break
+        
 
         

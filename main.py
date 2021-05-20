@@ -5,6 +5,7 @@ import gym
 from gym.envs.registration import register
 
 from algorithms import QLearning, Sarsa
+#from algorithms.ppo import run
 from utils import Plot, Logger
 
 class App:
@@ -64,6 +65,8 @@ class App:
             sarsa.run()
 
             _, avgValues = sarsa.finishLog()
+        elif self.algorithm == 'dqlearning':
+            pass
         else:
             Logger.error("Not a valid algorithm.")
             return -1

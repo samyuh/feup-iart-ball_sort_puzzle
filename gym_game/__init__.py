@@ -12,3 +12,17 @@ register(id='ball_sort-v0',
             'num_colors' : 2,
             },
 )
+
+register(id='ball_sort-v2',
+        entry_point='gym_game.envs:BallSortEnv',
+        kwargs={'board' : [[1, 2, 3, 1], [1, 2, 3, 3], [2, 3, 1, 2], [0, 0, 0, 0], [0, 0, 0, 0]],
+                'bottle_size' : 4,
+                'num_bottles' : 5,
+                'empty_spaces' : 8,
+                'num_balls' : 12,
+                'ball_per_color' : 4,
+                'num_colors' : 3,
+            },
+)
+
+
