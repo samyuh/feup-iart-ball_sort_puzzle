@@ -6,13 +6,13 @@ from gym.envs.registration import register
 
 from algorithms import QLearning, Sarsa
 #from algorithms.ppo import run
-from utils import Plot, Logger
+from utils import Plot, Logger, GameSettings
 
 class App:
     def __init__(self, args):
         if len(args) < 3:
             Logger.errorArgs()
-            return -1
+            exit(-1)
         
         self.algorithm = args[1]
         self.configFilePath = './config/{}'.format(args[2])
@@ -32,6 +32,8 @@ class App:
             Logger.error("Config file not found. More information on README.")
             return -1
 
+        self.settings = GameSettings(self.data['board'])
+
         self.run()
 
     def parseJson(self, path):
@@ -43,12 +45,13 @@ class App:
         register(id='ball_sort-v1',
                 entry_point='gym_game.envs:BallSortEnv',
                 kwargs={'board' : self.data['board'], 
-                        'bottle_size' : self.data['bottle_size'],
-                        'num_bottles' : self.data['num_bottles'],
-                        'empty_spaces' : self.data['empty_spaces'],
-                        'num_balls' : self.data['num_balls'],
-                        'ball_per_color' : self.data['ball_per_color'],
-                        'num_colors' : self.data['num_colors'],
+                        'max_steps' : self.data['max_steps'],
+                        'bottle_size' : self.settings.bottle_size,
+                        'num_bottles' : self.settings.num_bottles,
+                        'empty_spaces' : self.settings.empty_spaces,
+                        'num_balls' : self.settings.num_balls,
+                        'ball_per_color' : self.settings.ball_per_color,
+                        'num_colors' : self.settings.num_colors,
                     },
         )
         

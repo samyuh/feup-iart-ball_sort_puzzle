@@ -81,7 +81,7 @@ class DoubleQLearning(Algorithm):
 
                     self.q_table_two[state, action] =  self.q_table_two[state, action] + \
                         self.learning_rate * (reward + self.discount_rate * np.max(self.q_table_one[new_state, :]) - \
-                        self.q_table_two[state, action]))
+                        self.q_table_two[state, action])
                 
                 state = new_state
                 rewards_current_episode += reward

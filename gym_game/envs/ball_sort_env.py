@@ -9,8 +9,9 @@ from gym_game.envs.ball_sort_puzzle import BallSortPuzzle
 class BallSortEnv(gym.Env):
     metadata = {'render.modes': ['human']}
 
-    def __init__(self, board, bottle_size, num_bottles, empty_spaces, num_balls, ball_per_color, num_colors):
+    def __init__(self, board, max_steps, bottle_size, num_bottles, empty_spaces, num_balls, ball_per_color, num_colors):
         self.orig_board = board
+        self.max_steps = max_steps
         self.bottle_size = bottle_size
         self.num_bottles = num_bottles
 
@@ -60,7 +61,6 @@ class BallSortEnv(gym.Env):
     def step(self, action):
         self.iteration += 1
 
-        
         reward = self.game.applyMovement(action)
         done = self.game.isGoal()
         stuck = self.game.isStuck()
@@ -68,9 +68,7 @@ class BallSortEnv(gym.Env):
 
         if done: reward = self.num_balls
 
-        over = False
-        if self.iteration > 35:
-            over = True
+        over = True if self.iteration > self.max_steps else False
 
         return state, reward, done or stuck or over, {"state" : self.game.board}
     
