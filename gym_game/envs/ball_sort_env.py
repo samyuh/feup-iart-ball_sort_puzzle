@@ -29,16 +29,43 @@ class BallSortEnv(gym.Env):
 
         # Observation Space
         # Number of States
-        empty_spaces = comb(self.empty_spaces + self.num_bottles - 1, self.empty_spaces)
-
+        empty_spaces = self.emptySpacesComb(self.empty_spaces, self.num_bottles, self.bottle_size) 
         ball_permutations = factorial(self.num_balls) / (pow(factorial(self.ball_per_color), self.num_colors))
         value = int(empty_spaces * ball_permutations)
-        
 
-        self.observation_space = gym.spaces.Discrete(200)
+        self.observation_space = gym.spaces.Discrete(value)
 
         # Init Game
         self.reset()
+
+    def emptySpacesComb(self, n, k, w):
+        """
+        Number of ways to put n identic balls, in k bottles each one with capacity of w
+        Source: https://math.stackexchange.com/questions/620640/stars-and-bars-with-restriction-of-size-between-bars-via-generating-functions
+        """
+
+        firstSeries = []
+        secondSeries = []
+        valueList = []
+        factor = w + 1
+
+        for i in range(k + 1):
+            value = comb(10, i) * pow(-1, i)
+            firstSeries.append(value)
+        
+        for i in range(n + 1):
+            value = factorial(k + i - 1) / (factorial(k - 1) * factorial(i))
+            secondSeries.append(int(value))
+
+        result = 0
+        for idx, i in enumerate(firstSeries):
+            currentFactor = factor * idx
+            missingFactor = n - currentFactor
+
+            if currentFactor <= n and missingFactor >= 0:
+                valueList.append(i * secondSeries[missingFactor])
+
+        return sum(valueList)
 
     def argMax(self, validMoves, q_table_line):
         action = np.argmax(q_table_line)
