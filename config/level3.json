@@ -1,20 +1,14 @@
 {
-    "board" : [[1, 2, 1, 2], [2, 1, 2, 1], [0, 0, 0, 0]],
-    "max_steps" : 30,
-    "bottle_size" : 4,
-    "num_bottles" : 3,
-    "empty_spaces" : 4,
-    "num_balls" : 8,
-    "ball_per_color" : 4,
-    "num_colors" : 2,
+    "board" : [[2, 3, 2], [2, 4, 3], [3, 1, 1], [4, 4, 1], [0, 0, 0], [0, 0, 0]],
+    "max_steps": 40,
     "param" : {
-        "num_episodes" : 20000,
-        "max_steps_per_episode" : 30,
-        "learning_rate" : 0.1,
+        "num_episodes" : 30000,
+        "max_steps_per_episode" : 40,
+        "learning_rate" : 0.25,
         "discount_rate" : 0.95,
         "exploration_rate" : 1,    
         "max_exploration_rate" : 1,
-        "min_exploration_rate" : 0.01,
-        "exploration_decay_rate" : 0.01
+        "min_exploration_rate" : 0.0005,
+        "exploration_decay_rate" : 0.0005
     }
 }
