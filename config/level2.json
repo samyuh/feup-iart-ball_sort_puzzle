@@ -1,12 +1,6 @@
 {
     "board" : [[1, 2, 1, 2], [2, 1, 2, 1], [0, 0, 0, 0]],
     "max_steps" : 30,
-    "bottle_size" : 4,
-    "num_bottles" : 3,
-    "empty_spaces" : 4,
-    "num_balls" : 8,
-    "ball_per_color" : 4,
-    "num_colors" : 2,
     "param" : {
         "num_episodes" : 100000,
         "max_steps_per_episode" : 30,

@@ -1,12 +1,11 @@
 class Algorithm:
-    def __init__(self, env, data, render, verbose, log):
+    def __init__(self, env, data, render, verbose):
         # Set Environment
         self.env = env
 
         # Render, Log, Verbose
         self.render = render
         self.verbose = verbose
-        self.log = log
 
         # Define Hyper Parameters
         missingValues = False

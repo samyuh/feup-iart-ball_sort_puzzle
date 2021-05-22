@@ -5,7 +5,7 @@ import gym
 from gym.envs.registration import register
 
 from algorithms import QLearning, Sarsa, DoubleQLearning
-#from algorithms.ppo import run
+from algorithms.ppo import Ppo
 from utils import Plot, Logger, GameSettings
 
 class App:
@@ -18,19 +18,17 @@ class App:
         self.configFilePath = './config/{}'.format(args[2])
         self.render = False
         self.verbose = False
-        self.log = False
         self.plot = False 
 
         if '-render' in args: self.render = True
         if '-verbose' in args: self.verbose = True
-        if '-log' in args: self.log = True
         if '-plot' in args: self.plot = True
 
         try:
             self.data = self.parseJson(self.configFilePath)
         except FileNotFoundError:
             Logger.error("Config file not found. More information on README.")
-            return -1
+            exit(-1)
 
         self.settings = GameSettings(self.data['board'])
 
@@ -42,7 +40,8 @@ class App:
 
     def run(self):
         # Build Environment
-        register(id='ball_sort-v1',
+        env_id = 'ball_sort-v2'
+        register(id=env_id,
                 entry_point='gym_game.envs:BallSortEnv',
                 kwargs={'board' : self.data['board'], 
                         'max_steps' : self.data['max_steps'],
@@ -55,36 +54,41 @@ class App:
                     },
         )
         
-        env = gym.make("gym_game:ball_sort-v1")
+        env = gym.make(env_id)
 
         # Choose Algorithm
         if self.algorithm == 'qlearning':
-            qLearning = QLearning(env, self.data['param'], self.render, self.verbose, self.log)
+            qLearning = QLearning(env, self.data['param'], self.render, self.verbose)
             qLearning.run()
 
             _, avgValues = qLearning.finishLog()
         elif self.algorithm == 'sarsa':
-            sarsa = Sarsa(env, self.data['param'], self.render, self.verbose, self.log)
+            sarsa = Sarsa(env, self.data['param'], self.render, self.verbose)
             sarsa.run()
 
             _, avgValues = sarsa.finishLog()
         elif self.algorithm == 'dqlearning':
-            dqLearning = DoubleQLearning(env, self.data['param'], self.render, self.verbose, self.log)
+            dqLearning = DoubleQLearning(env, self.data['param'], self.render, self.verbose)
             dqLearning.run()
 
             _, avgValues = dqLearning.finishLog()
+        elif self.algorithm == 'ppo':
+            ppo = Ppo(env_id, self.data['param'], self.render, self.verbose, 4)
+            ppo.run()
+
+            exit(0)
         else:
             Logger.error("Not a valid algorithm.")
-            return -1
+            exit(-1)
 
-        if self.plot and self.log:
+        if self.plot:
             graphic = Plot(avgValues)
             graphic.plot()
         elif self.plot:
             Logger.error("Log should be enabled.")
-            return -1
+            exit(-1)
         
-        return 0
+        exit(0)
 
 if __name__ == "__main__":
     app = App(sys.argv)

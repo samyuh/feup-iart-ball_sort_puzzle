@@ -5,8 +5,8 @@ from algorithms import Algorithm
 from utils import Logger
 
 class Sarsa(Algorithm):
-    def __init__(self, env, data, render, verbose, log):
-        super().__init__(env, data, render, verbose, log)
+    def __init__(self, env, data, render, verbose):
+        super().__init__(env, data, render, verbose)
 
         self.logger = Logger("Sarsa")
 
@@ -21,9 +21,7 @@ class Sarsa(Algorithm):
         self.rewards_all_episodes = []
 
     def finishLog(self):
-        if self.log:
-            return self.logger.closeLogs()
-        return None, None
+        return self.logger.closeLogs()
 
     def run(self):
         # Starting the SARSA learning
@@ -69,14 +67,14 @@ class Sarsa(Algorithm):
             self.rewards_all_episodes.append(rewards_current_episode)
 
             if self.render: self.env.render()
-            if self.log: self.logger.writeLog(episode, rewards_current_episode)
+            self.logger.writeLog(episode, rewards_current_episode)
 
         # Calculate and print the average reward per 10 episodes
         rewards_per_thousand_episodes = np.split(np.array(self.rewards_all_episodes), self.num_episodes / 100)
 
         count = 100
         for r in rewards_per_thousand_episodes:
-            if self.log: self.logger.writeAvgRewards(count, r)
+            self.logger.writeAvgRewards(count, r)
             if self.verbose: Logger.printAvgRewards(count, r)
             count += 100
 
@@ -94,7 +92,6 @@ class Sarsa(Algorithm):
                 action = self.env.action_space.sample()
         else:
             qtableT = self.q_table[state,:]
-            #print(qtableT)
             action = np.argmax(self.q_table[state,:])
 
             already = False

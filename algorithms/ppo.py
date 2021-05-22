@@ -1,37 +1,38 @@
 import gym
+import numpy as np
 
+from algorithms import Algorithm
 from stable_baselines3 import PPO
 from stable_baselines3.common.env_util import make_vec_env
-from stable_baselines3.common.env_checker import check_env
 
-from gym.envs.registration import register
+class Ppo(Algorithm):
+    def __init__(self, env, data, render, verbose, cpu):
+        super().__init__(env, data, render, verbose)
 
-def run():
-    register(id='ball_sort-v1',
-            entry_point='gym_game.envs:BallSortEnv',
-            kwargs={'board' : [[1, 2, 1], [1, 2, 2], [0, 0, 0]],
-                'bottle_size' : 3,
-                'num_bottles' : 3,
-                'empty_spaces' : 3,
-                'num_balls' : 6,
-                'ball_per_color' : 3,
-                'num_colors' : 2,
-                },
-    )
+        self.num_cpu = cpu
 
-    env = make_vec_env("gym_game:ball_sort-v1", n_envs=3)
+    def run(self):
+        # Create the vectorized environment
+        env = make_vec_env(self.env, n_envs=self.num_cpu)
 
-    model = PPO("MlpPolicy", env, verbose=1)
-    model.learn(total_timesteps=25000)
-    model.save("ppo_cartpole")
+        model = PPO('MlpPolicy', 
+                    env,
+                    #learning_rate=0.01,
+                    #ent_coef = 0.01,
+                    #n_steps = 15,
+                    verbose=1)
 
-    del model # remove to demonstrate saving and loading
+        model.learn(total_timesteps=self.num_episodes)
 
-    model = PPO.load("ppo_cartpole")
+        obs = env.reset()
+        for i in range(50):
+            action, _states = model.predict(obs)
+            obs, rewards, gameStates, info = env.step(action)
 
-    obs = env.reset()
-    while True:
-        action, _states = model.predict(obs)
-        obs, rewards, dones, info = env.step(action)
-        print(dones)
-        #env.render()
+            if self.verbose: print(gameStates)
+            if self.render:
+                for board in info:
+                    print(board)
+        
+
+        
