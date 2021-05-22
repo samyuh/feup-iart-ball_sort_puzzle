@@ -65,22 +65,22 @@ class App:
 
         # Choose Algorithm
         if self.algorithm == 'qlearning':
-            qLearning = QLearning(env, self.data['param'], AlgorithmType.CLASSIC, self.render, self.verbose)
+            qLearning = QLearning(env, self.data['param'], AlgorithmType.VANILLA, self.render, self.verbose)
             qLearning.run()
 
             _, avgValues = qLearning.finishLog()
         elif self.algorithm == 'sarsa':
-            sarsa = Sarsa(env, self.data['param'], AlgorithmType.CLASSIC, self.render, self.verbose)
+            sarsa = Sarsa(env, self.data['param'], AlgorithmType.VANILLA, self.render, self.verbose)
             sarsa.run()
 
             _, avgValues = sarsa.finishLog()
         elif self.algorithm == 'dqlearning':
-            dqLearning = DoubleQLearning(env, self.data['param'], AlgorithmType.CLASSIC, self.render, self.verbose)
+            dqLearning = DoubleQLearning(env, self.data['param'], AlgorithmType.VANILLA, self.render, self.verbose)
             dqLearning.run()
 
             _, avgValues = dqLearning.finishLog()
         elif self.algorithm == 'ppo':
-            ppo = Ppo(env_id, self.data['param'], AlgorithmType.DEEP_LEARNING, self.render, self.verbose)
+            ppo = Ppo(env_id, self.data['param'], AlgorithmType.STABLE_BASELINES_PPO, self.render, self.verbose)
             ppo.run()
 
             exit(0)

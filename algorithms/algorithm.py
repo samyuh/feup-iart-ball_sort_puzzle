@@ -1,8 +1,8 @@
 from enum import Enum
 
 class AlgorithmType(Enum):
-    CLASSIC = 0
-    DEEP_LEARNING = 1
+    VANILLA = 0
+    STABLE_BASELINES_PPO = 1
 
 class Algorithm:
     def __init__(self, env, data, algorithmType, render, verbose):
@@ -16,7 +16,7 @@ class Algorithm:
         # Define Hyper Parameters
         missingValues = False
         
-        if algorithmType == AlgorithmType.CLASSIC:
+        if algorithmType == AlgorithmType.VANILLA:
             if 'num_episodes' not in data: missingValues = True
             if 'max_steps_per_episode' not in data: missingValues = True
             if 'learning_rate' not in data: missingValues = True
