@@ -6,8 +6,8 @@ from algorithms import Algorithm
 from utils import Logger
     
 class QLearning(Algorithm):
-    def __init__(self, env, data, render, verbose):
-        super().__init__(env, data, render, verbose)
+    def __init__(self, env, data, algorithmType, render, verbose):
+        super().__init__(env, data, algorithmType, render, verbose)
         
         self.logger = Logger("QLearning")
 

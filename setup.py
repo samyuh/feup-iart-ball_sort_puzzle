@@ -1,6 +1,6 @@
 from setuptools import setup
 
-setup(name='ball_sort_game', 
-      version='0.0.1', 
-      install_requires=['gym']
+setup(name='BallSortRL', 
+      version='1.0.0', 
+      install_requires=['gym==0.18.0', 'stable-baselines3==1.0']
 )

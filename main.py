@@ -4,8 +4,7 @@ import json
 import gym
 from gym.envs.registration import register
 
-from algorithms import QLearning, Sarsa, DoubleQLearning
-from algorithms.ppo import Ppo
+from algorithms import AlgorithmType, QLearning, Sarsa, DoubleQLearning, Ppo
 from utils import Plot, Logger, GameSettings
 
 class App:
@@ -32,14 +31,22 @@ class App:
 
         self.settings = GameSettings(self.data['board'])
 
-        self.run()
-
     def parseJson(self, path):
         with open(path) as json_file:
             return json.load(json_file)
 
     def run(self):
         # Build Environment
+        if 'board' not in self.data: 
+            Logger.error("Missing board on config file. Check readme.")
+            exit(-1)
+        elif 'max_steps' not in self.data: 
+            Logger.error("Missing max_steps on config file. Check readme.")
+            exit(-1)
+        elif 'param' not in self.data: 
+            Logger.error("Missing param on config file. Check readme.")
+            exit(-1)
+
         env_id = 'ball_sort-v2'
         register(id=env_id,
                 entry_point='gym_game.envs:BallSortEnv',
@@ -58,22 +65,22 @@ class App:
 
         # Choose Algorithm
         if self.algorithm == 'qlearning':
-            qLearning = QLearning(env, self.data['param'], self.render, self.verbose)
+            qLearning = QLearning(env, self.data['param'], AlgorithmType.CLASSIC, self.render, self.verbose)
             qLearning.run()
 
             _, avgValues = qLearning.finishLog()
         elif self.algorithm == 'sarsa':
-            sarsa = Sarsa(env, self.data['param'], self.render, self.verbose)
+            sarsa = Sarsa(env, self.data['param'], AlgorithmType.CLASSIC, self.render, self.verbose)
             sarsa.run()
 
             _, avgValues = sarsa.finishLog()
         elif self.algorithm == 'dqlearning':
-            dqLearning = DoubleQLearning(env, self.data['param'], self.render, self.verbose)
+            dqLearning = DoubleQLearning(env, self.data['param'], AlgorithmType.CLASSIC, self.render, self.verbose)
             dqLearning.run()
 
             _, avgValues = dqLearning.finishLog()
         elif self.algorithm == 'ppo':
-            ppo = Ppo(env_id, self.data['param'], self.render, self.verbose, 4)
+            ppo = Ppo(env_id, self.data['param'], AlgorithmType.DEEP_LEARNING, self.render, self.verbose)
             ppo.run()
 
             exit(0)
@@ -92,5 +99,6 @@ class App:
 
 if __name__ == "__main__":
     app = App(sys.argv)
+    app.run()
 
     

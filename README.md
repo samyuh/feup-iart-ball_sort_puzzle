@@ -23,15 +23,33 @@ same color and if the tube has enough space.
 
 ### Setup
 
-We used python version 3.8.9.
+We used python version 3.8.9 on Windows.
 
 Dependecies:
 ```
     pip install gym
-    pip install tensorflow
+    pip install stable_baselines3
 ```
 
-To run our program, run in the terminal:
+You can also config the project with our setup.py instead of running these pip commands.
+Create a virtual env (if you want)
+
+On Windows, run:
+```
+    python -m venv iart
+    iart\Scripts\activate.bat
+```
+On Unix or MacOS, run:
+```
+    python -m venv iart
+    source iart/bin/activate
+```
+After that, install all dependecies using:
+```
+    pip install .
+```
+
+Now you're ready! To run our program, run in the terminal:
 ```
  python main.py [ALGORITHM] [CONFIG] [-verbose -log -plot]
 
@@ -42,10 +60,13 @@ To run our program, run in the terminal:
 ##### Algorithms
 qlearning
 sarsa
+dqlearning
+ppo
 
 ##### Configuration Files
-Create a configuration file under the ./config directory (or use one of). The config files have the following layout:
-You can also use one of your config file, by passing "default.json" without quotes
+Create a configuration file under the ./config directory (or use one of). 
+The config files have the following layout if you're using one of the following algorithms: [qlearning, dqlearning, sarsa]
+You can also use one of your config file, by passing "level1.json" without quotes.
 
 ```json
 {
@@ -65,13 +86,31 @@ You can also use one of your config file, by passing "default.json" without quot
 }
 ```
 
+If you want to use ppo, the layout of the config file should be the following. You can also use our config file "level1-ppo.json".
+```json
+{
+    "board" : [[1, 2, 1], [1, 2, 2], [0, 0, 0]],
+    "max_steps" : 20,
+    "param" : {
+        "learning_rate" : 0.003,
+        "clip_range" : 0.2,
+        "gamma" : 0.99,
+        "gae_lambda" : 0.95,
+        "ent_coef" : 0.0,
+        "max_grad_norm" : 0.5,
+        "vf_coef" : 0.5,
+        "num_cpu" : 4,
+        "num_episodes" : 100000
+    }
+}
+```
+
 ##### Options
-- -log
 - -verbose
 - -render
 - -plot
 
-We recommend using the options: '-log -verbose -plot'
+We recommend use the options: '-verbose -plot'
 
 **Note 1**: If you don't choose anything on options, nothing will be printed or appear on your screen.
 **Note 2**: If you want to see the reward plot, using -plot, you should have -log too.
@@ -80,12 +119,12 @@ We recommend using the options: '-log -verbose -plot'
 
 #### Example 
 
-Use QLearning with the definitions of first_level.json with log, plot and verbose
+Use QLearning with the definitions of first_level.json with plot and verbose
 ```
-python main.py qlearning first_level.json -verbose -log -plot
+python main.py qlearning first_level.json -verbose -plot
 ```
 
-Use Sarsa with the definitions of first_level.json with log, plot, verbose and render
+Use Sarsa with the definitions of first_level.json with plot, verbose and render
 ```
-python main.py sarsa first_level.json -verbose -render -log -plot
+python main.py sarsa first_level.json -verbose -render -plot
 ```
