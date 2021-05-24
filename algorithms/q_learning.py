@@ -6,7 +6,61 @@ from algorithms import Algorithm
 from utils import Logger
     
 class QLearning(Algorithm):
+    """
+    A class used to run the Q-Learning algorithm
+    
+    Attributes
+    ----------
+    env: Environment
+        - OpenAI Gym environment
+
+    data: list of parameters
+        - list containing the necessary parameters for the class
+
+    algorithmType: Algorithm
+        - Chosen algorithm
+
+    render: Render
+        - OpenAI Gym environment rendering
+
+    verbose: bool
+        - Boolean value used for printing the values obtained in the algorithm
+    
+    logger: Logger
+        - logger class for printing the values obtained from the algorithm
+    
+    q_table : List of lists of doubles
+        - Q-table containing the values fo the actions of the Q-learning algorithm
+
+    rewards_all_episodes : List of int
+        - list containing the rewards values from all episodes
+    
+
+
+    """
     def __init__(self, env, data, algorithmType, render, verbose):
+        """
+        Constructor for the Q-learning algorithm class
+
+        Parameters
+        ----------
+        env: Environment
+            - OpenAI Gym environment
+
+        data: list of parameters
+            - list containing the necessary parameters for the class
+
+        algorithmType: Algorithm
+            - Chosen algorithm
+
+        render: Render
+            - OpenAI Gym environment rendering
+
+        verbose: bool
+            - Boolean value used for printing the values obtained in the algorithm
+
+        """
+
         super().__init__(env, data, algorithmType, render, verbose)
         
         self.logger = Logger("QLearning")
@@ -22,9 +76,16 @@ class QLearning(Algorithm):
         self.rewards_all_episodes = []
 
     def finishLog(self):
+        """
+        Closes the logger from printing more values
+        """
         return self.logger.closeLogs()
 
     def run(self):
+        """
+        Method for running the Q-Learning algorithm
+        """
+
         # Q-Learning algorithm
         for episode in range(self.num_episodes):
             if self.verbose: Logger.newEpisode(episode)

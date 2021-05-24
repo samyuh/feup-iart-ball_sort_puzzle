@@ -1,11 +1,96 @@
+# -- Personal Imports -- #
+
 from enum import Enum
 
+
 class AlgorithmType(Enum):
+    """
+    Python enumeration class for the distinguishing the algorithms 
+    """
     VANILLA = 0
     STABLE_BASELINES_PPO = 1
 
 class Algorithm:
+    """
+    Class for defining an algorithm in our project
+
+    Arguments
+    ---------
+    env: Environment
+        - OpenAI Gym environment
+
+    render: Render
+        - OpenAI Gym environment rendering
+
+    verbose: bool
+        - Boolean value used for printing the values obtained in the algorithm
+    
+    num_episodes : int
+        - number of episodes to be used in the algorithm 
+    
+    learning_rate : double
+        - learning rate value to be used in the algorithm (Alpha value)
+
+    discount_rate : double 
+        - discount rate value to be used in the algorithm (Gama value)
+
+    exploration_rate : double
+        - exploration rate value to be used in the algorithm (Epsion value)
+
+    max_exploration_rate = double # Max Epsilon
+         - maximum exploration rate value to be used in the algorithm (Max Epsilon value)
+
+    min_exploration_rate = double # Min Epsilon
+         - minimum exploration rate value to be used in the algorithm (Min Epsilon value)
+
+    exploration_decay_rate = double # Decay Rate
+        - Decay rate value to be used in the algorithm (Decay rate value)
+
+
+    clip_range : double
+        - learning rate range : 0.003 to 5e-6
+
+    gamma : double 
+        - Discount Factor Gamma Range: 0.99 (most common), 0.8 to 0.9997
+    
+    gae_lambda : double
+        - GAE Parameter Lambda Range: 0.9 to 1
+
+    ent_coef : double 
+        - Entropy Coefficient Range: 0 to 0.01
+    
+    max_grad_norm : double
+        - Value Function Coefficient Range: 0.5, 1
+
+    vf_coef : double 
+        - Value fucntion coeficient
+
+    num_cpu : double 
+        - number of CPUs
+
+    iteration_test : double 
+        - number of times we are running the model after it has been trained
+
+    """
     def __init__(self, env, data, algorithmType, render, verbose):
+        """
+        Parameters
+        ----------
+        env: Environment
+            - OpenAI Gym environment
+
+        data: list of parameters
+            - list containing the necessary parameters for the class
+
+        algorithmType: Algorithm
+            - Chosen algorithm
+
+        render: Render
+            - OpenAI Gym environment rendering
+
+        verbose: bool
+            - Boolean value used for printing the values obtained in the algorithm
+        """
         # Set Environment
         self.env = env
 

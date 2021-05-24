@@ -1,4 +1,26 @@
 class GameSettings:
+    """
+    Class for some helpful game settings
+
+    board : List of list of int
+        - Game board represented as a list of lists
+    
+    num_bottles : int
+        - number of bottles in the game
+
+    empty_spaces : int
+        - number of empty spaces in a bottle
+    
+    num_balls : int
+        - number of balls in a bottle
+    
+    num_colors : int
+        - number of colors in the game
+    
+    ball_per_colr : int
+        - number of existing balls of a certain color in the game
+
+    """
     def __init__(self, board):
         self.board = board
 

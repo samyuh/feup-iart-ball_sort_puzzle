@@ -5,7 +5,61 @@ from algorithms import Algorithm
 from utils import Logger
 
 class Sarsa(Algorithm):
+    """
+    Constructor for the Q-learning algorithm class
+    
+    Attributes
+    ----------
+    env: Environment
+        - OpenAI Gym environment
+
+    data: list of parameters
+        - list containing the necessary parameters for the class
+
+    algorithmType: Algorithm
+        - Chosen algorithm
+
+    render: Render
+        - OpenAI Gym environment rendering
+
+    verbose: bool
+        - Boolean value used for printing the values obtained in the algorithm
+    
+    logger: Logger
+        - logger class for printing the values obtained from the algorithm
+    
+    q_table : List of lists of doubles
+        - Q-table containing the values fo the actions of the Q-learning algorithm
+
+    rewards_all_episodes : List of int
+        - list containing the rewards values from all episodes
+
+    """
+
     def __init__(self, env, data, algorithmType, render, verbose):
+        """
+        Constructor for the Q-learning algorithm class
+
+        Parameters
+        ----------
+        env: Environment
+            - OpenAI Gym environment
+
+        data: list of parameters
+            - list containing the necessary parameters for the class
+
+        algorithmType: Algorithm
+            - Chosen algorithm
+
+        render: Render
+            - OpenAI Gym environment rendering
+
+        verbose: bool
+            - Boolean value used for printing the values obtained in the algorithm
+
+
+        """
+
         super().__init__(env, data, algorithmType, render, verbose)
 
         self.logger = Logger("Sarsa")
@@ -21,9 +75,15 @@ class Sarsa(Algorithm):
         self.rewards_all_episodes = []
 
     def finishLog(self):
+        """
+        Closes the logger from printing more values
+        """
         return self.logger.closeLogs()
 
     def run(self):
+        """
+        Method for running the Q-Learning algorithm
+        """
         # Starting the SARSA learning
         for episode in range(self.num_episodes):
             if self.verbose: Logger.newEpisode(episode)
@@ -82,7 +142,14 @@ class Sarsa(Algorithm):
 
     def choose_action(self, state):
         """
-        Choose the next action
+        Choose the next action for the algorithm
+
+        Parameters
+        ----------
+
+        state : int
+            - Index for the current value of the Q table
+
         """
         validMoves = self.env.game.getValid()
         action = 0
@@ -106,7 +173,25 @@ class Sarsa(Algorithm):
 
     def update(self, state, state2, reward, action, action2):
         """
-        Learn the Q-value
+        Learn the Q-value, updating the q-table
+
+        Parameters
+        ----------
+
+        state - int
+            - Index for the position iof the first state in the q-table 
+
+        state2 - int
+            - Index for the position iof the first state in the q-table 
+
+        reward - int
+            - current reward value
+        
+        action - int
+            - index for the action in the q_table for state
+        
+        action2 - int
+            - index for the action in the q_table for state2
         """
         predict = self.q_table[state, action]
         target = reward + self.discount_rate * self.q_table[state2, action2]

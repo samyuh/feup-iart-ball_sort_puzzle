@@ -1,8 +1,14 @@
-import os
 
+# -- Imports -- #
+
+import os
 from datetime import datetime
 
+
 class Logger:
+    """
+    Class for representing the logs of the algorithms
+    """
     def __init__(self, algorithm):
         self._dir = "logs/"
         

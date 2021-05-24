@@ -4,6 +4,9 @@ import pandas as pd
 import matplotlib.pyplot as plt 
 
 class Plot:
+    """
+    Class to plot the results of the algorithms
+    """
     def __init__(self, filePath):
         self.filepath = filePath
     

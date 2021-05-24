@@ -1,12 +1,50 @@
+# -- Imports -- #
+
 import gym
 import numpy as np
 import random
 
+# -- Personal Libraries -- #
+
 from algorithms import Algorithm
 from utils import Logger
-    
+
+
 class DoubleQLearning(Algorithm):
+    """
+    A class to use to run the Double-Q_learning algorithm
+
+    Attributes
+    ----------
+    env: Environment
+        - OpenAI Gym environment
+
+    data: list of parameters
+        - list containing the necessary parameters for the class
+
+    algorithmType: Algorithm
+        - Chosen algorithm
+
+    render: Render
+        - OpenAI Gym environment rendering
+
+    verbose: bool
+        - Boolean value used for printing the values obtained in the algorithm
+    
+    logger: Logger
+        - logger class for printing the values obtained from the algorithm
+    
+    q_table: List of lists of doubles
+        - Q-table containing the values fo the actions of the Q-learning algorithm
+
+    rewards_all_episodes: List of int
+        - list containing the rewards values from all episodes
+
+    """
     def __init__(self, env, data, algorithmType, render, verbose):
+        """
+        Constructor method for initialzing the Double-Q-Learning algorithm
+        """
         super().__init__(env, data, algorithmType, render, verbose)
         
         self.logger = Logger("QLearning")
@@ -22,10 +60,18 @@ class DoubleQLearning(Algorithm):
         # List of rewards
         self.rewards_all_episodes = []
 
+
     def finishLog(self):
+        """
+        Closes the logger from printing more values
+        """
         return self.logger.closeLogs()
 
     def run(self):
+        """
+        Method for running the Double-Q-Learning algorithm
+        """
+
         # Double Q-Learning algorithm
         for episode in range(self.num_episodes):
             if self.verbose: Logger.newEpisode(episode)

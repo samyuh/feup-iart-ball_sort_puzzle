@@ -1,12 +1,17 @@
 
+# -- Imports -- #
 import gym
 import numpy as np
 
+# -- Personal Imports -- #
 from math import perm, comb, factorial
 from copy import deepcopy
 from gym_game.envs.ball_sort_puzzle import BallSortPuzzle
 
 class BallSortEnv(gym.Env):
+    """
+    clas to represent the Ball Sort Puzzle environment
+    """
     metadata = {'render.modes': ['human']}
 
     def __init__(self, board, max_steps, bottle_size, num_bottles, empty_spaces, num_balls, ball_per_color, num_colors):
@@ -68,6 +73,15 @@ class BallSortEnv(gym.Env):
         return sum(valueList)
 
     def argMax(self, validMoves, q_table_line):
+        """
+        Get the action with maximum value
+
+        validMoves : list of Moves
+            - List containing all the valid moves
+        
+        q_table_line : List
+            - Single q_table row
+        """
         action = np.argmax(q_table_line)
 
         stateValues = q_table_line.argsort()[::-1]
@@ -77,7 +91,14 @@ class BallSortEnv(gym.Env):
 
         return action    
 
+
     def validSample(self, validMoves):
+        """
+        Action validation
+
+        validMoves : list of Moves
+            - List containing all the valid moves
+        """
         action = self.action_space.sample()
         if action not in validMoves:
             return np.random.choice(validMoves)
@@ -86,6 +107,13 @@ class BallSortEnv(gym.Env):
 
 
     def step(self, action):
+        """
+        Apply movement in the game
+
+        action : action
+            - ACtion to be executed
+
+        """
         self.iteration += 1
 
         reward = self.game.applyMovement(action)
@@ -100,6 +128,9 @@ class BallSortEnv(gym.Env):
         return state, reward, done or stuck or over, {"state" : self.game.board}
     
     def render(self, mode="human", close=False):
+        """
+        Print the game
+        """
         print("Bottles - Move {}".format(self.iteration))
         for idx in range(self.bottle_size):
             for bottle_num in range(self.num_bottles):
@@ -107,6 +138,9 @@ class BallSortEnv(gym.Env):
             print("\n", end="")
 
     def reset(self):
+        """
+        Reset the game
+        """
         board_copy = deepcopy(self.orig_board)
         self.game = BallSortPuzzle(board_copy, self.bottle_size, self.num_bottles)
 
