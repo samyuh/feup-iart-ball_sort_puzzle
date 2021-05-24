@@ -30,7 +30,7 @@ class BallSortEnv(gym.Env):
         # Observation Space
         # Number of States
         empty_spaces = self.emptySpacesComb(self.empty_spaces, self.num_bottles, self.bottle_size) 
-        ball_permutations = factorial(self.num_balls) / (pow(factorial(self.ball_per_color), self.num_colors))
+        ball_permutations = comb(self.num_balls, self.ball_per_color) / self.num_balls
         value = int(empty_spaces * ball_permutations)
 
         self.observation_space = gym.spaces.Discrete(value)
