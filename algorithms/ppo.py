@@ -32,10 +32,9 @@ class Ppo(Algorithm):
     
     q_table : List of lists of doubles
         - Q-table containing the values fo the actions of the Q-learning algorithm
-
     """
     def __init__(self, env, data, algorithmType, render, verbose):
-         """
+        """
         Constructor for the Proximal Policy Optimization (PPO) algorithm class
 
         Parameters
