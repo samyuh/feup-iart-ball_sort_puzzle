@@ -51,9 +51,9 @@ After that, install all dependecies using:
 
 Now you're ready! To run our program, run in the terminal:
 ```
- python main.py [ALGORITHM] [CONFIG] [-verbose -log -plot]
+ python main.py [ALGORITHM] [CONFIG] [-verbose -plot]
 
- python3 main.py [ALGORITHM] [CONFIG] [-verbose -log -plot]
+ python3 main.py [ALGORITHM] [CONFIG] [-verbose -plot]
 ```
 
 
@@ -112,19 +112,17 @@ If you want to use ppo, the layout of the config file should be the following. Y
 
 We recommend use the options: '-verbose -plot'
 
-**Note 1**: If you don't choose anything on options, nothing will be printed or appear on your screen.
-**Note 2**: If you want to see the reward plot, using -plot, you should have -log too.
-
+**Note**: If you don't choose anything on options, nothing will be printed or appear on your screen.
 ---
 
 #### Example 
 
-Use QLearning with the definitions of first_level.json with plot and verbose
+Use QLearning with the definitions of level1.json with plot and verbose
 ```
-python main.py qlearning first_level.json -verbose -plot
+python main.py qlearning level1.json -verbose -plot
 ```
 
-Use Sarsa with the definitions of first_level.json with plot, verbose and render
+Use Sarsa with the definitions of level1.json with plot, verbose and render
 ```
-python main.py sarsa first_level.json -verbose -render -plot
+python main.py sarsa level1.json -verbose -render -plot
 ```
