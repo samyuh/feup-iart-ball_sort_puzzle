@@ -55,15 +55,17 @@ class Logger:
     @staticmethod
     def errorArgs():
         print("Bad arguments\nUsage:")
-        print(" main.py [ALGORITHM] [CONFIG] {<-log> <-render> <-default>}\n\n")
+        print(" main.py [ALGORITHM] [CONFIG] { OPTIONS }\n\n")
         print("Configuration Files:")
         print("     - More information on README. You can also use one of your config file, by passing \"default.json\" without quotes\n")
         print("Algorithms:")
         print("     - qlearning")
         print("     - sarsa\n")
+        print("     - dqlearning\n")
+        print("     - ppo\n")
         print("OPTIONS:")
-        print("     -log")
-        print("     -render")
+        print("     -plot")
+        print("     -verbose")
         print("     -render")
 
     @staticmethod
