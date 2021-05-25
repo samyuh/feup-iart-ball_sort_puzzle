@@ -45,7 +45,7 @@ class Logger:
 
     @staticmethod
     def finishStep(step):
-        print("Found Solution - Step: {}".format(step))
+        print("Done - Step: {}".format(step))
 
     @staticmethod
     def finish(rewards_all_episodes, num_episodes, exploration_rate):

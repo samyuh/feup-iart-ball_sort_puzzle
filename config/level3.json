@@ -1,14 +1,14 @@
 {
-    "board" : [[1, 2, 3, 1], [1, 2, 3, 3], [2, 3, 1, 2], [0, 0, 0, 0], [0, 0, 0, 0]],
+    "board" : [[1, 1, 2, 3], [3, 1, 2, 1], [2, 2, 3, 3], [0, 0, 0, 0], [0, 0, 0, 0]],
     "max_steps": 100,
     "param": {
-        "num_episodes" : 40000,
-        "max_steps_per_episode" : 100,
-        "learning_rate" : 0.25,
-        "discount_rate" : 0.95,
+        "num_episodes" : 30000,
+        "max_steps_per_episode" : 40,
+        "learning_rate" : 0.1,
+        "discount_rate" : 0.9,
         "exploration_rate" : 1,    
         "max_exploration_rate" : 1,
-        "min_exploration_rate" : 0.0005,
-        "exploration_decay_rate" : 0.0005
+        "min_exploration_rate" : 0.001,
+        "exploration_decay_rate" : 0.01
     }
 }
