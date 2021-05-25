@@ -47,7 +47,7 @@ class DoubleQLearning(Algorithm):
         """
         super().__init__(env, data, algorithmType, render, verbose)
         
-        self.logger = Logger("QLearning")
+        self.logger = Logger("DoubleQLearning")
 
         # Set the action and state spaces
         action_space_size = self.env.action_space.n
